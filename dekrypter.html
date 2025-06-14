@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Last Key - Dekrypteringsværktøj</title>
+    <title>My Last Key - Decryption Tool</title>
     
     <!-- CDN Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -163,34 +163,34 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔓 My Last Key - Dekrypteringsværktøj</h1>
+        <h1>🔓 My Last Key - Decryption Tool</h1>
         
         <div class="info">
-            <strong>Sådan bruger du værktøjet:</strong><br>
-            1. Kopier den krypterede tekst fra dit nøgledokument<br>
-            2. Indsæt den i tekstfeltet nedenfor<br>
-            3. Indtast din master krypteringsnøgle<br>
-            4. Klik "Dekrypter" for at se den originale tekst
+            <strong>How to use this tool:</strong><br>
+            1. Copy the encrypted text from your key document<br>
+            2. Paste it in the text field below<br>
+            3. Enter your master encryption key<br>
+            4. Click "Decrypt" to see the original text
         </div>
 
         <div class="form-group">
-            <label for="encryptedText">Indsæt den krypterede tekst fra dokumentet her:</label>
-            <textarea id="encryptedText" placeholder="Indsæt den krypterede tekst her..."></textarea>
+            <label for="encryptedText">Paste the encrypted text from your document here:</label>
+            <textarea id="encryptedText" placeholder="Paste the encrypted text here..."></textarea>
         </div>
 
         <div class="form-group">
-            <label for="masterKey">Indtast den hemmelige Master Krypteringsnøgle:</label>
-            <input type="password" id="masterKey" placeholder="Din master krypteringsnøgle...">
+            <label for="masterKey">Enter the secret Master Encryption Key:</label>
+            <input type="password" id="masterKey" placeholder="Your master encryption key...">
         </div>
 
-        <button class="decrypt-btn" onclick="decryptText()">🔓 Dekrypter</button>
+        <button class="decrypt-btn" onclick="decryptText()">🔓 Decrypt</button>
 
         <div class="form-group">
-            <label for="decryptedResult">Resultat:</label>
-            <div id="decryptedResult">Klik "Dekrypter" for at se resultatet...</div>
+            <label for="decryptedResult">Result:</label>
+            <div id="decryptedResult">Click "Decrypt" to see the result...</div>
         </div>
 
-        <a href="index.html" class="back-link">← Tilbage til hovedapplikationen</a>
+        <a href="index.html" class="back-link">← Back to main application</a>
     </div>
 
     <script>
@@ -207,13 +207,13 @@
             
             // Validate inputs
             if (!encryptedText) {
-                resultDiv.textContent = 'Fejl: Indsæt venligst den krypterede tekst.';
+                resultDiv.textContent = 'Error: Please paste the encrypted text.';
                 resultDiv.classList.add('error');
                 return;
             }
             
             if (!masterKey) {
-                resultDiv.textContent = 'Fejl: Indtast venligst master krypteringsnøglen.';
+                resultDiv.textContent = 'Error: Please enter the master encryption key.';
                 resultDiv.classList.add('error');
                 return;
             }
@@ -224,7 +224,7 @@
                 const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
                 
                 if (!decryptedText) {
-                    throw new Error('Dekryptering resulterede i tom tekst');
+                    throw new Error('Decryption resulted in empty text');
                 }
                 
                 // Success
@@ -233,9 +233,9 @@
                 
             } catch (error) {
                 // Error handling
-                resultDiv.textContent = 'Fejl: Kunne ikke dekryptere. Er nøglen korrekt? Kontroller at både den krypterede tekst og master nøglen er indtastet korrekt.';
+                resultDiv.textContent = 'Error: Could not decrypt. Is the key correct? Check that both the encrypted text and master key are entered correctly.';
                 resultDiv.classList.add('error');
-                console.error('Dekrypteringsfejl:', error);
+                console.error('Decryption error:', error);
             }
         }
         

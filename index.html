@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Last Key - Sikker Nøgledokument Generator</title>
+    <title>My Last Key - Secure Document Generator</title>
     
     <!-- CDN Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -323,19 +323,19 @@
         <!-- Header -->
         <div class="header">
             <h1>🔐 My Last Key</h1>
-            <p>Generer et sikkert, fysisk nøgledokument med avanceret kryptering og QR-koder</p>
+            <p>Generate a secure, physical key document with advanced encryption and QR codes</p>
             <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="github-link" target="_blank">
-                📁 Se på GitHub
+                📁 View on GitHub
             </a>
         </div>
 
         <!-- Master Key Section -->
         <div class="master-key-section">
-            <h2>🔑 Master Krypteringsnøgle</h2>
-            <input type="password" id="masterKey" class="master-key-input" placeholder="Indtast din hemmelige master nøgle...">
+            <h2>🔑 Master Encryption Key</h2>
+            <input type="password" id="masterKey" class="master-key-input" placeholder="Enter your secret master key...">
             <p class="help-text">
-                Indtast en stærk, hemmelig nøgle her. Denne nøgle bruges til at kryptere og dekryptere alle felter, du markerer med 'Krypter'. 
-                Både du og din pårørende skal kende denne nøgle.
+                Enter a strong, secret key here. This key is used to encrypt and decrypt all fields you mark with 'Encrypt'. 
+                Both you and your trusted person must know this key.
             </p>
         </div>
 
@@ -343,18 +343,18 @@
         <div class="main-layout">
             <!-- Form Section -->
             <div class="form-section">
-                <h2>📝 Input Formular</h2>
+                <h2>📝 Input Form</h2>
                 <div id="inputRows">
                     <!-- Initial row will be added by JavaScript -->
                 </div>
-                <button class="add-row-btn" onclick="addRow()">+ Tilføj ny række</button>
+                <button class="add-row-btn" onclick="addRow()">+ Add New Row</button>
             </div>
 
             <!-- Preview Section -->
             <div class="preview-section">
                 <h2>👁️ Live Preview</h2>
                 <div id="previewContent">
-                    <p style="color: #666; font-style: italic;">Udfyld formularen til venstre for at se preview...</p>
+                    <p style="color: #666; font-style: italic;">Fill out the form on the left to see preview...</p>
                 </div>
             </div>
         </div>
@@ -366,12 +366,12 @@
 
         // Category options
         const categories = [
-            'Bruger/Password',
-            'Pinkode',
-            'Sikkerhedsspørgsmål',
-            'Wi-Fi Kode',
-            'Note/Tekst',
-            'Licensnøgle'
+            'User/Password',
+            'PIN Code',
+            'Security Question',
+            'Wi-Fi Code',
+            'Note/Text',
+            'License Key'
         ];
 
         // Initialize the app
@@ -406,13 +406,13 @@
             // Create title input
             const titleInput = document.createElement('input');
             titleInput.type = 'text';
-            titleInput.placeholder = "F.eks. 'Google Konto' eller 'Wi-Fi Hjemme'";
+            titleInput.placeholder = "e.g. 'Google Account' or 'Home Wi-Fi'";
             titleInput.addEventListener('input', updatePreview);
             
             // Create value input
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
-            valueInput.placeholder = 'Selve koden eller informationen';
+            valueInput.placeholder = 'The actual code or information';
             valueInput.addEventListener('input', updatePreview);
             
             // Create encrypt checkbox
@@ -420,7 +420,7 @@
             encryptCheckbox.type = 'checkbox';
             encryptCheckbox.addEventListener('change', updatePreview);
             const encryptLabel = document.createElement('label');
-            encryptLabel.textContent = 'Krypter';
+            encryptLabel.textContent = 'Encrypt';
             encryptLabel.style.fontSize = '0.8em';
             
             // Create QR checkbox
@@ -472,13 +472,13 @@
         /**
          * Encrypt text using AES with master key
          */
-        function encryptText(text, masterKey) {
-            try {
-                return CryptoJS.AES.encrypt(text, masterKey).toString();
-            } catch (error) {
-                return 'KRYPTERINGSFEJL';
-            }
-        }
+                 function encryptText(text, masterKey) {
+             try {
+                 return CryptoJS.AES.encrypt(text, masterKey).toString();
+             } catch (error) {
+                 return 'ENCRYPTION_ERROR';
+             }
+         }
 
         /**
          * Apply color coding to password text
@@ -540,10 +540,10 @@
             // Clear preview
             previewContent.innerHTML = '';
             
-            if (rows.length === 0) {
-                previewContent.innerHTML = '<p style="color: #666; font-style: italic;">Ingen data at vise...</p>';
-                return;
-            }
+                         if (rows.length === 0) {
+                 previewContent.innerHTML = '<p style="color: #666; font-style: italic;">No data to display...</p>';
+                 return;
+             }
             
             // Group entries by category
             const categorizedEntries = {};
@@ -562,12 +562,12 @@
                     categorizedEntries[category] = [];
                 }
                 
-                categorizedEntries[category].push({
-                    title: title || 'Uden titel',
-                    value: value || '',
-                    shouldEncrypt,
-                    shouldGenerateQR
-                });
+                                 categorizedEntries[category].push({
+                     title: title || 'Untitled',
+                     value: value || '',
+                     shouldEncrypt,
+                     shouldGenerateQR
+                 });
             });
             
             // Generate HTML for each category
@@ -602,18 +602,18 @@
                         displayValue = encrypted;
                         actualValue = encrypted;
                         entryValue.innerHTML = `<span class="encrypted">${displayValue}</span><span class="lock-icon">🔒</span>`;
-                    } else if (entry.value) {
-                        // Apply formatting based on category
-                        if (category === 'Bruger/Password') {
-                            entryValue.innerHTML = applyColorCoding(displayValue);
-                        } else if (category === 'Pinkode') {
-                            entryValue.innerHTML = applySequenceBoxes(displayValue);
-                        } else {
-                            entryValue.textContent = displayValue;
-                        }
-                    } else {
-                        entryValue.innerHTML = '<em style="color: #999;">Ingen værdi indtastet</em>';
-                    }
+                                         } else if (entry.value) {
+                         // Apply formatting based on category
+                         if (category === 'User/Password') {
+                             entryValue.innerHTML = applyColorCoding(displayValue);
+                         } else if (category === 'PIN Code') {
+                             entryValue.innerHTML = applySequenceBoxes(displayValue);
+                         } else {
+                             entryValue.textContent = displayValue;
+                         }
+                     } else {
+                         entryValue.innerHTML = '<em style="color: #999;">No value entered</em>';
+                     }
                     
                     entryDiv.appendChild(entryValue);
                     
@@ -629,10 +629,10 @@
                 previewContent.appendChild(categorySection);
             });
             
-            // Show message if no valid entries
-            if (Object.keys(categorizedEntries).length === 0) {
-                previewContent.innerHTML = '<p style="color: #666; font-style: italic;">Udfyld formularen til venstre for at se preview...</p>';
-            }
+                         // Show message if no valid entries
+             if (Object.keys(categorizedEntries).length === 0) {
+                 previewContent.innerHTML = '<p style="color: #666; font-style: italic;">Fill out the form on the left to see preview...</p>';
+             }
         }
     </script>
 </body>
