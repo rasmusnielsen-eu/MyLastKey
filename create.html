@@ -356,61 +356,67 @@
             line-height: 1.5;
         }
 
-        /* Enhanced Character Styling */
-        .char-digit { 
-            color: #3498db; 
-            font-weight: bold; 
-            background: rgba(52, 152, 219, 0.15);
-            padding: 3px 5px;
-            border-radius: 4px;
-            margin: 0 2px;
-            position: relative;
-        }
-        .char-lower { 
-            color: #2c3e50; 
-            background: rgba(44, 62, 80, 0.08);
-            padding: 3px 5px;
-            border-radius: 4px;
-            margin: 0 2px;
-            position: relative;
-        }
-        .char-upper { 
-            color: #27ae60; 
-            font-weight: bold; 
-            background: rgba(39, 174, 96, 0.15);
-            padding: 3px 5px;
-            border-radius: 4px;
-            margin: 0 2px;
-            position: relative;
-        }
-        .char-special { 
-            color: #e74c3c; 
-            font-weight: bold; 
-            background: rgba(231, 76, 60, 0.15);
-            padding: 3px 5px;
-            border-radius: 4px;
-            margin: 0 2px;
-            position: relative;
+        /* Password Table View */
+        .password-table {
+            display: table;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 10px 0;
         }
 
-        .char-counter {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.65em;
-            color: #7f8c8d;
-            background: white;
-            padding: 1px 3px;
-            border-radius: 2px;
-            border: 1px solid #bdc3c7;
-            font-weight: normal;
+        .password-row {
+            display: table-row;
         }
 
-        .char-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 3px 1px;
+        .char-number {
+            display: table-cell;
+            width: 30px;
+            text-align: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 8px 4px;
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .char-cell {
+            display: table-cell;
+            text-align: center;
+            border: 2px solid #dee2e6;
+            padding: 12px 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            min-width: 40px;
+            vertical-align: middle;
+        }
+
+        .char-cell.digit {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #1976d2;
+        }
+
+        .char-cell.lower {
+            background: #f3e5f5;
+            border-color: #9c27b0;
+            color: #7b1fa2;
+        }
+
+        .char-cell.upper {
+            background: #e8f5e8;
+            border-color: #4caf50;
+            color: #388e3c;
+        }
+
+        .char-cell.special {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #d32f2f;
         }
 
         /* Simple text mode */
@@ -418,7 +424,8 @@
             font-family: 'Courier New', monospace;
             font-size: 1.3em;
             color: #2c3e50;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            line-height: 1.8;
         }
 
         /* Sequence Boxes */
@@ -734,31 +741,51 @@
         }
 
         /**
-         * Apply enhanced color coding to password text with character numbers
+         * Apply enhanced color coding to password text with table view
          */
         function applyColorCoding(text, enhanced = true) {
             if (!enhanced) {
                 return `<span class="simple-text">${text}</span>`;
             }
             
-            return text.split('').map((char, index) => {
-                const charNum = index + 1;
-                let className = '';
-                if (/\d/.test(char)) {
-                    className = 'char-digit';
-                } else if (/[a-z]/.test(char)) {
-                    className = 'char-lower';
-                } else if (/[A-Z]/.test(char)) {
-                    className = 'char-upper';
-                } else {
-                    className = 'char-special';
-                }
+            // Create table view for enhanced mode
+            const chars = text.split('');
+            let tableHTML = '<div class="password-table">';
+            
+            // Create rows of 10 characters each
+            for (let i = 0; i < chars.length; i += 10) {
+                const rowChars = chars.slice(i, i + 10);
                 
-                return `<span class="char-wrapper">
-                    <span class="char-counter">${charNum}</span>
-                    <span class="${className}">${char}</span>
-                </span>`;
-            }).join('');
+                // Number row
+                tableHTML += '<div class="password-row">';
+                tableHTML += '<div class="char-number">#</div>';
+                rowChars.forEach((char, index) => {
+                    tableHTML += `<div class="char-number">${i + index + 1}</div>`;
+                });
+                tableHTML += '</div>';
+                
+                // Character row
+                tableHTML += '<div class="password-row">';
+                tableHTML += '<div class="char-number">Char</div>';
+                rowChars.forEach(char => {
+                    let className = '';
+                    if (/\d/.test(char)) {
+                        className = 'digit';
+                    } else if (/[a-z]/.test(char)) {
+                        className = 'lower';
+                    } else if (/[A-Z]/.test(char)) {
+                        className = 'upper';
+                    } else {
+                        className = 'special';
+                    }
+                    
+                    tableHTML += `<div class="char-cell ${className}">${char}</div>`;
+                });
+                tableHTML += '</div>';
+            }
+            
+            tableHTML += '</div>';
+            return tableHTML;
         }
 
         /**
@@ -774,23 +801,31 @@
          * Generate QR code for given text
          */
         function generateQRCode(text, containerId) {
-            const canvas = document.createElement('canvas');
-            QRCode.toCanvas(canvas, text, {
-                width: 200,
-                margin: 2,
-                color: {
-                    dark: '#000000',
-                    light: '#FFFFFF'
-                }
-            }, function (error) {
-                if (error) console.error('QR Code generation error:', error);
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                
+                QRCode.toCanvas(canvas, text, {
+                    width: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    },
+                    errorCorrectionLevel: 'M'
+                }, function (error) {
+                    if (error) {
+                        console.error('QR Code generation error:', error);
+                        reject(error);
+                        return;
+                    }
+                    
+                    const qrDiv = document.createElement('div');
+                    qrDiv.className = 'qr-code';
+                    qrDiv.appendChild(canvas);
+                    
+                    resolve(qrDiv);
+                });
             });
-            
-            const qrDiv = document.createElement('div');
-            qrDiv.className = 'qr-code';
-            qrDiv.appendChild(canvas);
-            
-            return qrDiv;
         }
 
         /**
@@ -913,8 +948,18 @@
                     
                     // Generate QR code if requested and no encryption errors
                     if (entry.shouldGenerateQR && actualValue && !entry.encryptionError) {
-                        const qrCode = generateQRCode(actualValue, `qr-${category}-${index}`);
-                        entryDiv.appendChild(qrCode);
+                        generateQRCode(actualValue, `qr-${category}-${index}`)
+                            .then(qrCode => {
+                                entryDiv.appendChild(qrCode);
+                            })
+                            .catch(error => {
+                                console.error('Failed to generate QR code:', error);
+                                const errorDiv = document.createElement('div');
+                                errorDiv.style.color = '#e74c3c';
+                                errorDiv.style.fontStyle = 'italic';
+                                errorDiv.textContent = 'QR code generation failed';
+                                entryDiv.appendChild(errorDiv);
+                            });
                     }
                     
                     categorySection.appendChild(entryDiv);
