@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Last Key - Dekrypteringsværktøj</title>
+    
+    <!-- CDN Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .decrypt-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+
+        .decrypt-btn:hover {
+            background: #2980b9;
+        }
+
+        .decrypt-btn:active {
+            transform: translateY(1px);
+        }
+
+        #decryptedResult {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            min-height: 60px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            word-break: break-all;
+        }
+
+        .error {
+            color: #e74c3c;
+            background: #fdf2f2;
+            border-left-color: #e74c3c;
+        }
+
+        .success {
+            color: #27ae60;
+            background: #f0f9f4;
+            border-left-color: #27ae60;
+        }
+
+        .info {
+            background: #e8f4f8;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 My Last Key - Dekrypteringsværktøj</h1>
+        
+        <div class="info">
+            <strong>Sådan bruger du værktøjet:</strong><br>
+            1. Kopier den krypterede tekst fra dit nøgledokument<br>
+            2. Indsæt den i tekstfeltet nedenfor<br>
+            3. Indtast din master krypteringsnøgle<br>
+            4. Klik "Dekrypter" for at se den originale tekst
+        </div>
+
+        <div class="form-group">
+            <label for="encryptedText">Indsæt den krypterede tekst fra dokumentet her:</label>
+            <textarea id="encryptedText" placeholder="Indsæt den krypterede tekst her..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="masterKey">Indtast den hemmelige Master Krypteringsnøgle:</label>
+            <input type="password" id="masterKey" placeholder="Din master krypteringsnøgle...">
+        </div>
+
+        <button class="decrypt-btn" onclick="decryptText()">🔓 Dekrypter</button>
+
+        <div class="form-group">
+            <label for="decryptedResult">Resultat:</label>
+            <div id="decryptedResult">Klik "Dekrypter" for at se resultatet...</div>
+        </div>
+
+        <a href="index.html" class="back-link">← Tilbage til hovedapplikationen</a>
+    </div>
+
+    <script>
+        /**
+         * Decrypt the encrypted text using the master key
+         */
+        function decryptText() {
+            const encryptedText = document.getElementById('encryptedText').value.trim();
+            const masterKey = document.getElementById('masterKey').value.trim();
+            const resultDiv = document.getElementById('decryptedResult');
+            
+            // Clear previous result classes
+            resultDiv.className = '';
+            
+            // Validate inputs
+            if (!encryptedText) {
+                resultDiv.textContent = 'Fejl: Indsæt venligst den krypterede tekst.';
+                resultDiv.classList.add('error');
+                return;
+            }
+            
+            if (!masterKey) {
+                resultDiv.textContent = 'Fejl: Indtast venligst master krypteringsnøglen.';
+                resultDiv.classList.add('error');
+                return;
+            }
+            
+            try {
+                // Attempt to decrypt the text
+                const decryptedBytes = CryptoJS.AES.decrypt(encryptedText, masterKey);
+                const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                
+                if (!decryptedText) {
+                    throw new Error('Dekryptering resulterede i tom tekst');
+                }
+                
+                // Success
+                resultDiv.textContent = decryptedText;
+                resultDiv.classList.add('success');
+                
+            } catch (error) {
+                // Error handling
+                resultDiv.textContent = 'Fejl: Kunne ikke dekryptere. Er nøglen korrekt? Kontroller at både den krypterede tekst og master nøglen er indtastet korrekt.';
+                resultDiv.classList.add('error');
+                console.error('Dekrypteringsfejl:', error);
+            }
+        }
+        
+        // Allow Enter key to trigger decryption
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                decryptText();
+            }
+        });
+        
+        // Auto-focus on encrypted text field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('encryptedText').focus();
+        });
+    </script>
+</body>
+</html> 
