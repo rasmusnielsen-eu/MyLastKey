@@ -330,27 +330,66 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: black;
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
             display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .scanner-controls {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1001;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .scanner-close-btn {
             background: #e74c3c;
             color: white;
             border: none;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-size: 1em;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            touch-action: manipulation;
+            min-height: 50px;
+        }
+
+        .scanner-close-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .scanner-close-btn:active {
+            transform: translateY(0);
+        }
+
+        #qr-scanner-region {
+            width: 90%;
+            max-width: 400px;
+            height: 400px;
+            border: 3px solid #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .scanner-instructions {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            padding: 0 20px;
         }
 
         /* Export Toggle */
@@ -709,6 +748,38 @@
                 gap: 10px;
             }
             
+            /* Mobile scanner improvements */
+            #qr-reader {
+                padding: 10px;
+            }
+            
+            .scanner-controls {
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            .scanner-close-btn {
+                width: 100%;
+                font-size: 1.2em;
+                padding: 18px 25px;
+            }
+            
+            #qr-scanner-region {
+                width: 95%;
+                height: 300px;
+                margin-top: 80px;
+            }
+            
+            .scanner-instructions {
+                margin-top: 80px;
+                margin-bottom: 10px;
+                font-size: 1em;
+            }
+            
             .main-layout {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -911,6 +982,11 @@
         <div class="scanner-controls">
             <button class="scanner-close-btn" onclick="closeScanner()">❌ Close Scanner</button>
         </div>
+        <div class="scanner-instructions">
+            <p>📱 Point your camera at the QR code</p>
+            <p>Make sure the code is well lit and clearly visible</p>
+        </div>
+        <div id="qr-scanner-region"></div>
     </div>
 
     <script>
@@ -1228,61 +1304,77 @@
          */
         function startQRScanner() {
             const qrReaderDiv = document.getElementById('qr-reader');
-            qrReaderDiv.style.display = 'block';
+            qrReaderDiv.style.display = 'flex';
             
-            // Clear any existing scanner content except controls
-            const controls = qrReaderDiv.querySelector('.scanner-controls');
-            qrReaderDiv.innerHTML = '';
-            qrReaderDiv.appendChild(controls);
+            // Prevent body scroll when scanner is open
+            document.body.style.overflow = 'hidden';
             
-            // Create scanner div
-            const scannerDiv = document.createElement('div');
-            scannerDiv.id = 'qr-scanner-region';
-            scannerDiv.style.width = '100%';
-            scannerDiv.style.height = '100%';
-            qrReaderDiv.appendChild(scannerDiv);
+            // Clear any existing scanner
+            if (html5QrCode) {
+                html5QrCode.stop().catch(err => console.log("Error stopping existing scanner:", err));
+            }
             
-            html5QrCode = new Html5Qrcode("qr-scanner-region");
-            
-            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                console.log(`QR Code scanned: ${decodedText}`);
+            // Small delay to ensure DOM is ready
+            setTimeout(() => {
                 try {
-                    const importedData = JSON.parse(decodedText);
+                    html5QrCode = new Html5Qrcode("qr-scanner-region");
                     
-                    // Stop scanner and close
-                    html5QrCode.stop().then(() => {
-                        closeScanner();
-                        populateFormFromData(importedData);
-                    }).catch(err => {
-                        console.error("Failed to stop scanner", err);
-                        closeScanner();
-                        populateFormFromData(importedData);
-                    });
+                    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                        console.log(`QR Code scanned: ${decodedText}`);
+                        try {
+                            const importedData = JSON.parse(decodedText);
+                            
+                            // Stop scanner and close
+                            html5QrCode.stop().then(() => {
+                                closeScanner();
+                                populateFormFromData(importedData);
+                            }).catch(err => {
+                                console.error("Failed to stop scanner", err);
+                                closeScanner();
+                                populateFormFromData(importedData);
+                            });
+                            
+                        } catch (error) {
+                            alert("❌ Error: Could not read data from QR code. Is this a 'My Last Key' code?");
+                            console.error('QR decode error:', error);
+                        }
+                    };
                     
-                } catch (error) {
-                    alert("❌ Error: Could not read data from QR code. Is this a 'My Last Key' code?");
-                    console.error('QR decode error:', error);
-                }
-            };
-            
-            const config = { 
-                fps: 10, 
-                qrbox: { width: 250, height: 250 },
-                aspectRatio: 1.0
-            };
-            
-            // Try to start with back camera first
-            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-                .catch(err => {
-                    console.log("Back camera failed, trying front camera:", err);
-                    // If back camera fails, try front camera
-                    html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback)
+                    const qrCodeErrorCallback = (error) => {
+                        // Ignore frequent scanning errors, only log real issues
+                        if (error.includes("NotFoundException")) {
+                            return; // Normal when no QR code is visible
+                        }
+                        console.log("QR scan error:", error);
+                    };
+                    
+                    const config = { 
+                        fps: 10, 
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1.0,
+                        disableFlip: false,
+                        rememberLastUsedCamera: true
+                    };
+                    
+                    // Try to start with back camera first (better for scanning)
+                    html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, qrCodeErrorCallback)
                         .catch(err => {
-                            console.error("Both cameras failed:", err);
-                            alert("❌ Error: Could not start camera. Have you granted permission?");
-                            closeScanner();
+                            console.log("Back camera failed, trying front camera:", err);
+                            // If back camera fails, try front camera
+                            html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback, qrCodeErrorCallback)
+                                .catch(err => {
+                                    console.error("Both cameras failed:", err);
+                                    alert("❌ Error: Could not start camera. Please check permissions and try again.");
+                                    closeScanner();
+                                });
                         });
-                });
+                        
+                } catch (error) {
+                    console.error("Scanner initialization error:", error);
+                    alert("❌ Error initializing scanner. Please try again.");
+                    closeScanner();
+                }
+            }, 100);
         }
 
         /**
@@ -1291,16 +1383,22 @@
         function closeScanner() {
             const qrReaderDiv = document.getElementById('qr-reader');
             
+            // Restore body scroll
+            document.body.style.overflow = '';
+            
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
                     html5QrCode.clear();
                     html5QrCode = null;
+                    qrReaderDiv.style.display = 'none';
                 }).catch(err => {
                     console.error("Error stopping scanner:", err);
+                    html5QrCode = null;
+                    qrReaderDiv.style.display = 'none';
                 });
+            } else {
+                qrReaderDiv.style.display = 'none';
             }
-            
-            qrReaderDiv.style.display = 'none';
         }
 
         /**
