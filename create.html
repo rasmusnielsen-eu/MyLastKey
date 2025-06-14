@@ -8,6 +8,8 @@
     <!-- CDN Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <!-- QR Code Scanner for Import -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <style>
         * {
@@ -211,6 +213,103 @@
         .print-btn:hover {
             background: #7d3c98;
             transform: translateY(-2px);
+        }
+
+        /* Import Button */
+        .import-btn {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .import-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        /* QR Scanner Overlay */
+        #qr-reader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 1000;
+            display: none;
+        }
+
+        .scanner-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .scanner-close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Export Toggle */
+        .export-toggle-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .export-toggle-container label {
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        /* Export QR Code Container */
+        #exportQrCodeContainer {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            text-align: center;
+        }
+
+        #exportQrCodeContainer h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        #exportQrCodeContainer p {
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
         }
 
         /* Main Layout */
@@ -484,6 +583,57 @@
             font-weight: 500;
         }
 
+        /* Mobile Responsive Design */
+        @media (max-width: 800px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .top-controls {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: left;
+            }
+            
+            .input-row select,
+            .input-row input[type="text"] {
+                width: 100%;
+            }
+            
+            .checkbox-group {
+                justify-content: center;
+            }
+            
+            .remove-btn {
+                align-self: center;
+                margin-top: 10px;
+            }
+        }
+
         /* Print Styles */
         @media print {
             body {
@@ -519,6 +669,11 @@
             .entry {
                 border: 1px solid #000 !important;
                 background: white !important;
+            }
+            
+            /* Ensure export QR code is visible when printing if enabled */
+            #exportQrCodeContainer {
+                display: block !important;
             }
         }
 
@@ -563,6 +718,9 @@
             <p class="subtitle">Create your secure document with encryption and QR codes</p>
             
             <div class="header-nav">
+                <button id="scanImportButton" class="import-btn">
+                    📱 Scan Dokument for at Importere
+                </button>
                 <a href="./index.html" class="nav-btn">
                     📖 About & Security
                 </a>
@@ -608,6 +766,17 @@
                     <!-- Initial row will be added by JavaScript -->
                 </div>
                 <button class="add-row-btn" onclick="addRow()">+ Add New Entry</button>
+                
+                <!-- Export Toggle -->
+                <div class="export-toggle-container">
+                    <label for="showExportQrToggle">
+                        <input type="checkbox" id="showExportQrToggle" onchange="updatePreview()">
+                        📤 Vis Eksport QR-kode i preview
+                    </label>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Generer en QR-kode med alle dine data til fremtidig import
+                    </small>
+                </div>
             </div>
 
             <!-- Preview Section -->
@@ -616,13 +785,29 @@
                 <div id="previewContent">
                     <p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>
                 </div>
+                
+                <!-- Export QR Code Container (hidden by default) -->
+                <div id="exportQrCodeContainer" style="display: none;">
+                    <h3>📤 Data QR-kode (til fremtidig import)</h3>
+                    <p><small>Print denne side. Næste gang du skal opdatere, kan du scanne denne kode for at genindlæse alle data.</small></p>
+                    <div id="qrcode"></div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Window (hidden by default) -->
+    <div id="qr-reader">
+        <div class="scanner-controls">
+            <button class="scanner-close-btn" onclick="closeScanner()">❌ Luk Scanner</button>
         </div>
     </div>
 
     <script>
         // Global variables
         let rowCounter = 0;
+        let qrcode = null;
+        let html5QrCode = null;
 
         // Category options
         const categories = [
@@ -640,6 +825,9 @@
             
             // Add event listener for master key changes
             document.getElementById('masterKey').addEventListener('input', updatePreview);
+            
+            // Add event listener for import button
+            document.getElementById('scanImportButton').addEventListener('click', startQRScanner);
         });
 
         /**
@@ -839,6 +1027,169 @@
         }
 
         /**
+         * Collect all form data for export
+         */
+        function collectAllFormData() {
+            const rows = document.querySelectorAll('.input-row');
+            const masterKey = document.getElementById('masterKey').value;
+            const enhanced = document.getElementById('enhancedToggle').checked;
+            
+            const formData = {
+                masterKey: masterKey,
+                enhanced: enhanced,
+                entries: []
+            };
+            
+            rows.forEach(row => {
+                const category = row.querySelector('select').value;
+                const title = row.querySelector('input[type="text"]').value;
+                const value = row.querySelectorAll('input[type="text"]')[1].value;
+                const shouldEncrypt = row.querySelector('input[type="checkbox"]').checked;
+                const shouldGenerateQR = row.querySelectorAll('input[type="checkbox"]')[1].checked;
+                
+                // Only include non-empty entries
+                if (title.trim() || value.trim()) {
+                    formData.entries.push({
+                        category: category,
+                        title: title,
+                        value: value,
+                        shouldEncrypt: shouldEncrypt,
+                        shouldGenerateQR: shouldGenerateQR
+                    });
+                }
+            });
+            
+            return formData;
+        }
+
+        /**
+         * Populate form from imported data
+         */
+        function populateFormFromData(data) {
+            try {
+                // Clear existing rows
+                const rowsContainer = document.getElementById('inputRows');
+                rowsContainer.innerHTML = '';
+                rowCounter = 0;
+                
+                // Set master key and enhanced toggle
+                if (data.masterKey) {
+                    document.getElementById('masterKey').value = data.masterKey;
+                }
+                if (typeof data.enhanced === 'boolean') {
+                    document.getElementById('enhancedToggle').checked = data.enhanced;
+                }
+                
+                // Add entries
+                if (data.entries && data.entries.length > 0) {
+                    data.entries.forEach(entry => {
+                        addRow();
+                        const lastRow = document.querySelector('.input-row:last-child');
+                        
+                        // Set values
+                        lastRow.querySelector('select').value = entry.category || 'User/Password';
+                        lastRow.querySelector('input[type="text"]').value = entry.title || '';
+                        lastRow.querySelectorAll('input[type="text"]')[1].value = entry.value || '';
+                        lastRow.querySelector('input[type="checkbox"]').checked = entry.shouldEncrypt || false;
+                        lastRow.querySelectorAll('input[type="checkbox"]')[1].checked = entry.shouldGenerateQR || false;
+                    });
+                } else {
+                    // Add at least one empty row
+                    addRow();
+                }
+                
+                // Update preview
+                updatePreview();
+                
+                alert('✅ Data importeret succesfuldt!');
+                
+            } catch (error) {
+                console.error('Error populating form:', error);
+                alert('❌ Fejl ved import af data. Kontroller QR-koden.');
+            }
+        }
+
+        /**
+         * Start QR Scanner for import
+         */
+        function startQRScanner() {
+            const qrReaderDiv = document.getElementById('qr-reader');
+            qrReaderDiv.style.display = 'block';
+            
+            // Clear any existing scanner content except controls
+            const controls = qrReaderDiv.querySelector('.scanner-controls');
+            qrReaderDiv.innerHTML = '';
+            qrReaderDiv.appendChild(controls);
+            
+            // Create scanner div
+            const scannerDiv = document.createElement('div');
+            scannerDiv.id = 'qr-scanner-region';
+            scannerDiv.style.width = '100%';
+            scannerDiv.style.height = '100%';
+            qrReaderDiv.appendChild(scannerDiv);
+            
+            html5QrCode = new Html5Qrcode("qr-scanner-region");
+            
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                console.log(`QR Code scanned: ${decodedText}`);
+                try {
+                    const importedData = JSON.parse(decodedText);
+                    
+                    // Stop scanner and close
+                    html5QrCode.stop().then(() => {
+                        closeScanner();
+                        populateFormFromData(importedData);
+                    }).catch(err => {
+                        console.error("Failed to stop scanner", err);
+                        closeScanner();
+                        populateFormFromData(importedData);
+                    });
+                    
+                } catch (error) {
+                    alert("❌ Fejl: Kunne ikke læse data fra QR-koden. Er det en 'My Last Key' kode?");
+                    console.error('QR decode error:', error);
+                }
+            };
+            
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            };
+            
+            // Try to start with back camera first
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                .catch(err => {
+                    console.log("Back camera failed, trying front camera:", err);
+                    // If back camera fails, try front camera
+                    html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback)
+                        .catch(err => {
+                            console.error("Both cameras failed:", err);
+                            alert("❌ Fejl: Kunne ikke starte kameraet. Har du givet tilladelse?");
+                            closeScanner();
+                        });
+                });
+        }
+
+        /**
+         * Close QR Scanner
+         */
+        function closeScanner() {
+            const qrReaderDiv = document.getElementById('qr-reader');
+            
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    html5QrCode = null;
+                }).catch(err => {
+                    console.error("Error stopping scanner:", err);
+                });
+            }
+            
+            qrReaderDiv.style.display = 'none';
+        }
+
+        /**
          * Main function to update the preview
          */
         function updatePreview() {
@@ -971,6 +1322,35 @@
             // Show message if no valid entries
             if (Object.keys(categorizedEntries).length === 0) {
                 previewContent.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>';
+            }
+            
+            // Handle Export QR Code
+            const showQr = document.getElementById('showExportQrToggle').checked;
+            const qrContainer = document.getElementById('exportQrCodeContainer');
+            
+            if (showQr && Object.keys(categorizedEntries).length > 0) {
+                qrContainer.style.display = 'block';
+                
+                // Collect all form data
+                const formData = collectAllFormData();
+                const jsonData = JSON.stringify(formData);
+                
+                // Generate QR code
+                const qrcodeDiv = document.getElementById('qrcode');
+                qrcodeDiv.innerHTML = ""; // Clear previous QR code
+                
+                if (!qrcode) {
+                    qrcode = new QRCode(qrcodeDiv, {
+                        text: jsonData,
+                        width: 256,
+                        height: 256,
+                        correctLevel: QRCode.CorrectLevel.L // Level L for max data capacity
+                    });
+                } else {
+                    qrcode.makeCode(jsonData);
+                }
+            } else {
+                qrContainer.style.display = 'none';
             }
         }
 
