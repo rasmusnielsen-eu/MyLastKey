@@ -954,6 +954,18 @@
             <!-- Form Section -->
             <div class="form-section">
                 <h2>📝 Add Information</h2>
+                
+                <!-- QR Reminder (hidden by default) -->
+                <div id="qrReminder" style="display: none; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #856404;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.2em;">💡</span>
+                        <div>
+                            <strong>Reminder:</strong> When you're done adding entries, remember to click <strong>"Generate Export QR"</strong> to create a QR code for easy future import!
+                        </div>
+                        <button onclick="hideQrReminder()" style="background: none; border: none; font-size: 1.2em; cursor: pointer; color: #856404; margin-left: auto;">✕</button>
+                    </div>
+                </div>
+                
                 <div id="inputRows">
                     <!-- Initial row will be added by JavaScript -->
                 </div>
@@ -969,9 +981,10 @@
                 
                 <!-- Export QR Code Container (hidden by default) -->
                 <div id="exportQrCodeContainer" style="display: none;">
-                    <h3>📤 Data QR Code (for future import)</h3>
+                    <h3>📤 Export QR Code (for future import)</h3>
                     <p><small>Print this page. Next time you need to update, scan this code to reload all your data.</small></p>
                     <div id="qrcode"></div>
+                    <p id="qrDataInfo" style="font-size: 12px; color: #666; margin-top: 10px;"></p>
                 </div>
             </div>
         </div>
@@ -980,7 +993,7 @@
     <!-- QR Scanner Window (hidden by default) -->
     <div id="qr-reader">
         <div class="scanner-controls">
-            <button class="scanner-close-btn" onclick="closeScanner()">❌ Close Scanner</button>
+            <button class="scanner-close-btn" onclick="forceCloseScanner()" style="z-index: 9999; position: relative;">❌ Close Scanner</button>
         </div>
         <div class="scanner-instructions">
             <p>📱 Point your camera at the QR code</p>
@@ -994,6 +1007,7 @@
         let rowCounter = 0;
         let qrcode = null;
         let html5QrCode = null;
+        let qrReminderShown = false;
 
         // Category options
         const categories = [
@@ -1023,6 +1037,9 @@
             const rowsContainer = document.getElementById('inputRows');
             const rowId = `row-${rowCounter++}`;
             
+            // Hide QR reminder when adding new rows (user is still working)
+            hideQrReminder();
+            
             const rowDiv = document.createElement('div');
             rowDiv.className = 'input-row';
             rowDiv.id = rowId;
@@ -1041,13 +1058,19 @@
             const titleInput = document.createElement('input');
             titleInput.type = 'text';
             titleInput.placeholder = "e.g. 'Google Account' or 'Home Wi-Fi'";
-            titleInput.addEventListener('input', updatePreview);
+            titleInput.addEventListener('input', () => {
+                updatePreview();
+                checkShowQrReminder();
+            });
             
             // Create value input
             const valueInput = document.createElement('input');
             valueInput.type = 'text';
             valueInput.placeholder = 'The actual code or information';
-            valueInput.addEventListener('input', updatePreview);
+            valueInput.addEventListener('input', () => {
+                updatePreview();
+                checkShowQrReminder();
+            });
             
             // Create encrypt checkbox
             const encryptDiv = document.createElement('div');
@@ -1257,45 +1280,87 @@
          */
         function populateFormFromData(data) {
             try {
+                console.log("Starting form population with data:", data);
+                
                 // Clear existing rows
                 const rowsContainer = document.getElementById('inputRows');
+                if (!rowsContainer) {
+                    throw new Error("Input rows container not found");
+                }
+                
                 rowsContainer.innerHTML = '';
                 rowCounter = 0;
                 
                 // Set master key and enhanced toggle
                 if (data.masterKey) {
-                    document.getElementById('masterKey').value = data.masterKey;
+                    const masterKeyInput = document.getElementById('masterKey');
+                    if (masterKeyInput) {
+                        masterKeyInput.value = data.masterKey;
+                        console.log("Master key set");
+                    }
                 }
+                
                 if (typeof data.enhanced === 'boolean') {
-                    document.getElementById('enhancedToggle').checked = data.enhanced;
+                    const enhancedToggle = document.getElementById('enhancedToggle');
+                    if (enhancedToggle) {
+                        enhancedToggle.checked = data.enhanced;
+                        console.log("Enhanced toggle set to:", data.enhanced);
+                    }
                 }
                 
                 // Add entries
                 if (data.entries && data.entries.length > 0) {
-                    data.entries.forEach(entry => {
-                        addRow();
-                        const lastRow = document.querySelector('.input-row:last-child');
-                        
-                        // Set values
-                        lastRow.querySelector('select').value = entry.category || 'User/Password';
-                        lastRow.querySelector('input[type="text"]').value = entry.title || '';
-                        lastRow.querySelectorAll('input[type="text"]')[1].value = entry.value || '';
-                        lastRow.querySelector('input[type="checkbox"]').checked = entry.shouldEncrypt || false;
-                        lastRow.querySelectorAll('input[type="checkbox"]')[1].checked = entry.shouldGenerateQR || false;
+                    console.log(`Adding ${data.entries.length} entries`);
+                    
+                    data.entries.forEach((entry, index) => {
+                        try {
+                            addRow();
+                            const lastRow = document.querySelector('.input-row:last-child');
+                            
+                            if (!lastRow) {
+                                throw new Error(`Failed to create row ${index + 1}`);
+                            }
+                            
+                            // Set values with error checking
+                            const selectElement = lastRow.querySelector('select');
+                            const textInputs = lastRow.querySelectorAll('input[type="text"]');
+                            const checkboxes = lastRow.querySelectorAll('input[type="checkbox"]');
+                            
+                            if (selectElement) selectElement.value = entry.category || 'User/Password';
+                            if (textInputs[0]) textInputs[0].value = entry.title || '';
+                            if (textInputs[1]) textInputs[1].value = entry.value || '';
+                            if (checkboxes[0]) checkboxes[0].checked = entry.shouldEncrypt || false;
+                            if (checkboxes[1]) checkboxes[1].checked = entry.shouldGenerateQR || false;
+                            
+                            console.log(`Entry ${index + 1} populated successfully`);
+                            
+                        } catch (entryError) {
+                            console.error(`Error adding entry ${index + 1}:`, entryError);
+                        }
                     });
                 } else {
-                    // Add at least one empty row
+                    console.log("No entries found, adding empty row");
                     addRow();
                 }
                 
                 // Update preview
                 updatePreview();
                 
+                console.log("Form population completed successfully");
                 alert('✅ Data imported successfully!');
                 
             } catch (error) {
                 console.error('Error populating form:', error);
-                alert('❌ Error importing data. Please check the QR code.');
+                alert('❌ Error importing data: ' + error.message);
+                
+                // Ensure at least one row exists
+                try {
+                    if (document.querySelectorAll('.input-row').length === 0) {
+                        addRow();
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback row creation failed:', fallbackError);
+                }
             }
         }
 
@@ -1303,7 +1368,22 @@
          * Start QR Scanner for import
          */
         function startQRScanner() {
+            console.log("Starting QR Scanner...");
+            
+            // Check if Html5Qrcode is available
+            if (typeof Html5Qrcode === 'undefined') {
+                console.error("Html5Qrcode library not loaded!");
+                alert("❌ Error: QR Scanner library not loaded. Please refresh the page and try again.");
+                return;
+            }
+            
             const qrReaderDiv = document.getElementById('qr-reader');
+            if (!qrReaderDiv) {
+                console.error("QR reader div not found!");
+                alert("❌ Error: Scanner interface not found.");
+                return;
+            }
+            
             qrReaderDiv.style.display = 'flex';
             
             // Prevent body scroll when scanner is open
@@ -1311,32 +1391,31 @@
             
             // Clear any existing scanner
             if (html5QrCode) {
+                console.log("Stopping existing scanner...");
                 html5QrCode.stop().catch(err => console.log("Error stopping existing scanner:", err));
+                html5QrCode = null;
             }
             
             // Small delay to ensure DOM is ready
             setTimeout(() => {
                 try {
+                    console.log("Initializing Html5Qrcode...");
                     html5QrCode = new Html5Qrcode("qr-scanner-region");
                     
                     const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-                        console.log(`QR Code scanned: ${decodedText}`);
-                        try {
-                            const importedData = JSON.parse(decodedText);
-                            
-                            // Stop scanner and close
+                        console.log(`QR Code scanned successfully: ${decodedText.substring(0, 100)}...`);
+                        
+                        // Immediately stop scanner to prevent multiple scans
+                        if (html5QrCode) {
                             html5QrCode.stop().then(() => {
-                                closeScanner();
-                                populateFormFromData(importedData);
+                                console.log("Scanner stopped after successful scan");
+                                processScannedData(decodedText);
                             }).catch(err => {
-                                console.error("Failed to stop scanner", err);
-                                closeScanner();
-                                populateFormFromData(importedData);
+                                console.error("Failed to stop scanner after scan", err);
+                                processScannedData(decodedText);
                             });
-                            
-                        } catch (error) {
-                            alert("❌ Error: Could not read data from QR code. Is this a 'My Last Key' code?");
-                            console.error('QR decode error:', error);
+                        } else {
+                            processScannedData(decodedText);
                         }
                     };
                     
@@ -1344,6 +1423,9 @@
                         // Ignore frequent scanning errors, only log real issues
                         if (error.includes("NotFoundException")) {
                             return; // Normal when no QR code is visible
+                        }
+                        if (error.includes("NotFoundError")) {
+                            return; // Normal scanning state
                         }
                         console.log("QR scan error:", error);
                     };
@@ -1356,12 +1438,20 @@
                         rememberLastUsedCamera: true
                     };
                     
+                    console.log("Starting camera with config:", config);
+                    
                     // Try to start with back camera first (better for scanning)
                     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, qrCodeErrorCallback)
+                        .then(() => {
+                            console.log("Back camera started successfully");
+                        })
                         .catch(err => {
                             console.log("Back camera failed, trying front camera:", err);
                             // If back camera fails, try front camera
                             html5QrCode.start({ facingMode: "user" }, config, qrCodeSuccessCallback, qrCodeErrorCallback)
+                                .then(() => {
+                                    console.log("Front camera started successfully");
+                                })
                                 .catch(err => {
                                     console.error("Both cameras failed:", err);
                                     alert("❌ Error: Could not start camera. Please check permissions and try again.");
@@ -1371,33 +1461,118 @@
                         
                 } catch (error) {
                     console.error("Scanner initialization error:", error);
-                    alert("❌ Error initializing scanner. Please try again.");
+                    alert("❌ Error initializing scanner: " + error.message);
                     closeScanner();
                 }
-            }, 100);
+            }, 200);
         }
 
         /**
-         * Close QR Scanner
+         * Process scanned QR data
          */
-        function closeScanner() {
+        function processScannedData(decodedText) {
+            try {
+                console.log("Processing scanned data...");
+                const importedData = JSON.parse(decodedText);
+                console.log("Parsed QR data:", importedData);
+                
+                // Validate data structure
+                if (!importedData.entries || !Array.isArray(importedData.entries)) {
+                    throw new Error("Invalid data structure - missing entries array");
+                }
+                
+                // Close scanner UI
+                closeScanner();
+                
+                // Small delay to ensure UI is updated before showing alert
+                setTimeout(() => {
+                    populateFormFromData(importedData);
+                }, 100);
+                
+            } catch (error) {
+                console.error('QR decode error:', error);
+                console.error('Raw data:', decodedText);
+                
+                // Close scanner even on error
+                closeScanner();
+                
+                // Show error message
+                setTimeout(() => {
+                    alert("❌ Error: Could not read data from QR code. Is this a 'My Last Key' export code?\n\nError: " + error.message);
+                }, 100);
+            }
+        }
+
+        /**
+         * Force close QR Scanner (for close button)
+         */
+        function forceCloseScanner() {
+            console.log("Force closing QR Scanner...");
             const qrReaderDiv = document.getElementById('qr-reader');
             
-            // Restore body scroll
+            // Restore body scroll immediately
             document.body.style.overflow = '';
             
+            // Hide UI immediately
+            if (qrReaderDiv) {
+                qrReaderDiv.style.display = 'none';
+            }
+            
+            // Force stop scanner
             if (html5QrCode) {
+                console.log("Force stopping scanner...");
+                try {
+                    html5QrCode.stop().then(() => {
+                        console.log("Scanner force stopped successfully");
+                        html5QrCode.clear();
+                        html5QrCode = null;
+                    }).catch(err => {
+                        console.error("Error force stopping scanner:", err);
+                        // Force cleanup even if stop fails
+                        try {
+                            html5QrCode.clear();
+                        } catch (clearErr) {
+                            console.error("Error clearing scanner:", clearErr);
+                        }
+                        html5QrCode = null;
+                    });
+                } catch (error) {
+                    console.error("Critical error stopping scanner:", error);
+                    html5QrCode = null;
+                }
+            } else {
+                console.log("No active scanner to force stop");
+            }
+        }
+
+        /**
+         * Close QR Scanner (gentle close)
+         */
+        function closeScanner() {
+            console.log("Closing QR Scanner...");
+            const qrReaderDiv = document.getElementById('qr-reader');
+            
+            // Restore body scroll immediately
+            document.body.style.overflow = '';
+            
+            // Hide UI immediately
+            if (qrReaderDiv) {
+                qrReaderDiv.style.display = 'none';
+            }
+            
+            // Stop scanner in background
+            if (html5QrCode) {
+                console.log("Stopping scanner...");
                 html5QrCode.stop().then(() => {
+                    console.log("Scanner stopped successfully");
                     html5QrCode.clear();
                     html5QrCode = null;
-                    qrReaderDiv.style.display = 'none';
                 }).catch(err => {
                     console.error("Error stopping scanner:", err);
                     html5QrCode = null;
-                    qrReaderDiv.style.display = 'none';
                 });
             } else {
-                qrReaderDiv.style.display = 'none';
+                console.log("No active scanner to stop");
             }
         }
 
@@ -1410,11 +1585,20 @@
             const rows = document.querySelectorAll('.input-row');
             const enhanced = document.getElementById('enhancedToggle').checked;
             
-            // Clear preview
+            // Clear preview but preserve export QR container
+            const exportQrContainer = document.getElementById('exportQrCodeContainer');
+            const exportQrParent = exportQrContainer ? exportQrContainer.parentNode : null;
+            const exportQrDisplay = exportQrContainer ? exportQrContainer.style.display : 'none';
+            
             previewContent.innerHTML = '';
             
             if (rows.length === 0) {
                 previewContent.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>';
+                // Restore export QR container if it existed
+                if (exportQrContainer && exportQrParent) {
+                    previewContent.appendChild(exportQrContainer);
+                    exportQrContainer.style.display = exportQrDisplay;
+                }
                 return;
             }
             
@@ -1535,6 +1719,12 @@
             if (Object.keys(categorizedEntries).length === 0) {
                 previewContent.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>';
             }
+            
+            // Restore export QR container if it existed
+            if (exportQrContainer && exportQrParent) {
+                previewContent.appendChild(exportQrContainer);
+                exportQrContainer.style.display = exportQrDisplay;
+            }
         }
 
         /**
@@ -1575,16 +1765,27 @@
             qrcodeDiv.innerHTML = ""; // Clear previous QR code
             
             try {
-                if (!qrcode) {
-                    qrcode = new QRCode(qrcodeDiv, {
-                        text: jsonData,
-                        width: 256,
-                        height: 256,
-                        correctLevel: QRCode.CorrectLevel.L // Level L for max data capacity
-                    });
-                } else {
-                    qrcode.makeCode(jsonData);
+                // Always create a new QR code instance to avoid conflicts
+                const newQrCode = new QRCode(qrcodeDiv, {
+                    text: jsonData,
+                    width: 256,
+                    height: 256,
+                    correctLevel: QRCode.CorrectLevel.L // Level L for max data capacity
+                });
+                
+                // Store reference for future updates
+                qrcode = newQrCode;
+                
+                console.log('Export QR code generated successfully with data length:', jsonData.length);
+                
+                // Show data info
+                const dataInfo = document.getElementById('qrDataInfo');
+                if (dataInfo) {
+                    dataInfo.textContent = `Data size: ${jsonData.length} characters | Entries: ${formData.entries.length}`;
                 }
+                
+                // Hide QR reminder since user has generated the QR code
+                hideQrReminder();
                 
                 alert('✅ Export QR code generated successfully! Scroll down to see it.');
                 
@@ -1593,7 +1794,8 @@
                 
             } catch (error) {
                 console.error('QR Code generation error:', error);
-                alert('❌ Error generating QR code. Please try again.');
+                console.error('Data that failed:', jsonData);
+                alert('❌ Error generating QR code. Data might be too large. Try reducing the amount of data or remove some entries.');
                 qrContainer.style.display = 'none';
             }
         }
@@ -1603,6 +1805,51 @@
          */
         function printDocument() {
             window.print();
+        }
+
+        /**
+         * Check if QR reminder should be shown
+         */
+        function checkShowQrReminder() {
+            if (qrReminderShown) return; // Already shown
+            
+            const rows = document.querySelectorAll('.input-row');
+            let hasContent = false;
+            
+            // Check if there's any actual content
+            rows.forEach(row => {
+                const title = row.querySelector('input[type="text"]').value;
+                const value = row.querySelectorAll('input[type="text"]')[1].value;
+                if (title.trim() || value.trim()) {
+                    hasContent = true;
+                }
+            });
+            
+            // Show reminder if there's content and user hasn't seen it yet
+            if (hasContent && rows.length >= 2) { // Show after they have at least 2 rows with content
+                showQrReminder();
+            }
+        }
+
+        /**
+         * Show QR reminder
+         */
+        function showQrReminder() {
+            const reminder = document.getElementById('qrReminder');
+            if (reminder && !qrReminderShown) {
+                reminder.style.display = 'block';
+                qrReminderShown = true;
+            }
+        }
+
+        /**
+         * Hide QR reminder
+         */
+        function hideQrReminder() {
+            const reminder = document.getElementById('qrReminder');
+            if (reminder) {
+                reminder.style.display = 'none';
+            }
         }
     </script>
 </body>
