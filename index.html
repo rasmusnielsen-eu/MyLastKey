@@ -25,7 +25,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -34,7 +34,7 @@
         .header {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 30px;
+            padding: 40px;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -42,280 +42,142 @@
 
         .header h1 {
             color: #2c3e50;
-            font-size: 2.5em;
-            margin-bottom: 15px;
+            font-size: 3em;
+            margin-bottom: 20px;
             font-weight: 700;
         }
 
-        .header p {
-            font-size: 1.1em;
+        .header .subtitle {
+            font-size: 1.3em;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .github-link {
-            display: inline-block;
-            background: #333;
+        .header-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #3498db;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-decoration: none;
             border-radius: 25px;
-            transition: background 0.3s;
-        }
-
-        .github-link:hover {
-            background: #555;
-        }
-
-        /* Master Key Section */
-        .master-key-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .master-key-section h2 {
-            color: #e74c3c;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-
-        .master-key-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            transition: border-color 0.3s;
-        }
-
-        .master-key-input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .help-text {
-            color: #666;
-            font-size: 0.9em;
-            font-style: italic;
-        }
-
-        /* Main Layout */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        /* Form Section */
-        .form-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        /* Input Row */
-        .input-row {
-            display: grid;
-            grid-template-columns: 150px 1fr 1fr 80px 60px 40px;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #e9ecef;
-        }
-
-        .input-row select,
-        .input-row input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-
-        .input-row input[type="checkbox"] {
-            transform: scale(1.2);
-        }
-
-        .remove-btn {
-            background: #e74c3c;
-            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
             border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
             cursor: pointer;
-            font-size: 1.2em;
-            transition: background 0.3s;
+            font-size: 1em;
         }
 
-        .remove-btn:hover {
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.secondary {
+            background: #95a5a6;
+        }
+
+        .nav-btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .nav-btn.danger {
+            background: #e74c3c;
+        }
+
+        .nav-btn.danger:hover {
             background: #c0392b;
         }
 
-        .add-row-btn {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 15px;
-            transition: background 0.3s;
-        }
-
-        .add-row-btn:hover {
-            background: #229954;
-        }
-
-        /* Preview Section */
-        .preview-section {
+        /* Introduction Section */
+        .intro-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .preview-section h2 {
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .intro-content h2 {
             color: #2c3e50;
+            font-size: 2em;
             margin-bottom: 20px;
-            font-size: 1.5em;
         }
 
-        /* Preview Content */
-        .category-section {
-            margin-bottom: 30px;
-        }
-
-        .category-section h3 {
-            color: #34495e;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
+        .intro-content p {
             margin-bottom: 15px;
-        }
-
-        .entry {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
-        }
-
-        .entry-title {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .entry-value {
-            font-family: 'Courier New', monospace;
             font-size: 1.1em;
+            line-height: 1.7;
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .security-info {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .security-info h3 {
+            color: #27ae60;
             margin-bottom: 10px;
         }
 
-        /* Character Styling */
-        .char-digit { color: #3498db; font-weight: bold; }
-        .char-lower { color: #2c3e50; }
-        .char-upper { color: #27ae60; font-weight: bold; }
-        .char-special { color: #e74c3c; font-weight: bold; }
 
-        /* Sequence Boxes */
-        .sequence-box {
-            display: inline-block;
-            border: 2px solid #34495e;
-            padding: 8px 12px;
-            margin: 2px;
-            border-radius: 5px;
-            background: white;
-            font-weight: bold;
-            font-size: 1.2em;
-            min-width: 35px;
-            text-align: center;
-        }
-
-        /* QR Code */
-        .qr-code {
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .qr-code canvas {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        /* Encrypted indicator */
-        .encrypted {
-            color: #e74c3c;
-            font-style: italic;
-        }
-
-        .lock-icon {
-            margin-left: 5px;
-        }
-
-        /* Print Styles */
-        @media print {
-            body {
-                background: white;
-                color: black;
-            }
-
-            .header, .master-key-section, .form-section {
-                display: none;
-            }
-
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .preview-section {
-                background: white;
-                box-shadow: none;
-                border: 1px solid #000;
-            }
-
-            .char-digit { color: #0066cc !important; }
-            .char-lower { color: #000000 !important; }
-            .char-upper { color: #006600 !important; }
-            .char-special { color: #cc0000 !important; }
-
-            .sequence-box {
-                border: 2px solid #000 !important;
-                background: white !important;
-            }
-        }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .main-layout {
+        @media (max-width: 1200px) {
+            .intro-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .input-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .input-row > * {
-                width: 100%;
             }
         }
+
+        @media (max-width: 768px) {
+            .header-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+
     </style>
 </head>
 <body>
@@ -323,317 +185,75 @@
         <!-- Header -->
         <div class="header">
             <h1>🔐 My Last Key</h1>
-            <p>Generate a secure, physical key document with advanced encryption and QR codes</p>
-            <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="github-link" target="_blank">
-                📁 View on GitHub
-            </a>
-        </div>
-
-        <!-- Master Key Section -->
-        <div class="master-key-section">
-            <h2>🔑 Master Encryption Key</h2>
-            <input type="password" id="masterKey" class="master-key-input" placeholder="Enter your secret master key...">
-            <p class="help-text">
-                Enter a strong, secret key here. This key is used to encrypt and decrypt all fields you mark with 'Encrypt'. 
-                Both you and your trusted person must know this key.
-            </p>
-        </div>
-
-        <!-- Main Layout -->
-        <div class="main-layout">
-            <!-- Form Section -->
-            <div class="form-section">
-                <h2>📝 Input Form</h2>
-                <div id="inputRows">
-                    <!-- Initial row will be added by JavaScript -->
-                </div>
-                <button class="add-row-btn" onclick="addRow()">+ Add New Row</button>
-            </div>
-
-            <!-- Preview Section -->
-            <div class="preview-section">
-                <h2>👁️ Live Preview</h2>
-                <div id="previewContent">
-                    <p style="color: #666; font-style: italic;">Fill out the form on the left to see preview...</p>
-                </div>
+            <p class="subtitle">Generate a secure, physical key document with advanced encryption and QR codes. Create a printable backup of your most important passwords and codes.</p>
+            
+            <div class="header-nav">
+                <button class="nav-btn active">
+                    📖 About & Security
+                </button>
+                <a href="create.html" class="nav-btn">
+                    🔑 Create Document
+                </a>
+                <a href="dekrypter.html" class="nav-btn secondary">
+                    🔓 Decrypt Tool
+                </a>
+                <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="nav-btn secondary" target="_blank">
+                    📁 GitHub
+                </a>
             </div>
         </div>
+
+        <!-- Introduction Section -->
+        <div class="intro-section">
+            <div class="intro-grid">
+                <div class="intro-content">
+                    <h2>🎯 Purpose & Features</h2>
+                    <p><strong>My Last Key</strong> helps you create a secure, physical document containing all your important passwords, codes, and sensitive information. Perfect for emergency access or as a backup for your digital password manager.</p>
+                    
+                    <ul class="features-list">
+                        <li><strong>AES Encryption:</strong> Military-grade encryption for sensitive data</li>
+                        <li><strong>QR Codes:</strong> Easy scanning for quick access</li>
+                        <li><strong>Visual Formatting:</strong> Enhanced readability with color coding</li>
+                        <li><strong>Print Optimized:</strong> Perfect formatting for physical storage</li>
+                        <li><strong>Client-Side Only:</strong> No data ever leaves your browser</li>
+                        <li><strong>Multiple Categories:</strong> Organize by type (passwords, PINs, etc.)</li>
+                    </ul>
+
+                    <div class="security-info">
+                        <h3>🔒 Security Guarantee</h3>
+                        <p><strong>100% Client-Side:</strong> All encryption and processing happens locally in your browser. No data is ever transmitted to any server.</p>
+                        <p><strong>Your Master Key:</strong> Only you know your encryption key. Without it, encrypted data cannot be decrypted by anyone.</p>
+                        <p><strong>Open Source:</strong> Full source code available on GitHub for transparency.</p>
+                    </div>
+                </div>
+
+                <div class="intro-content">
+                    <h2>🚀 How It Works</h2>
+                    <p><strong>Step 1:</strong> Enter a strong master encryption key that you'll remember.</p>
+                    <p><strong>Step 2:</strong> Add your passwords, codes, and sensitive information.</p>
+                    <p><strong>Step 3:</strong> Choose which items to encrypt and which to generate QR codes for.</p>
+                    <p><strong>Step 4:</strong> Print your secure document and store it safely.</p>
+                    <p><strong>Step 5:</strong> Use the decrypt tool when you need to recover encrypted information.</p>
+
+                    <h2 style="margin-top: 30px;">📋 Supported Categories</h2>
+                    <ul class="features-list">
+                        <li><strong>User/Password:</strong> Login credentials with visual formatting</li>
+                        <li><strong>PIN Code:</strong> Numeric codes in easy-to-read boxes</li>
+                        <li><strong>Security Questions:</strong> Backup recovery information</li>
+                        <li><strong>Wi-Fi Codes:</strong> Network passwords and settings</li>
+                        <li><strong>License Keys:</strong> Software and service licenses</li>
+                        <li><strong>Notes/Text:</strong> Any other important information</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <script>
-        // Global variables
-        let rowCounter = 0;
-
-        // Category options
-        const categories = [
-            'User/Password',
-            'PIN Code',
-            'Security Question',
-            'Wi-Fi Code',
-            'Note/Text',
-            'License Key'
-        ];
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            addRow(); // Add initial row
-            
-            // Add event listener for master key changes
-            document.getElementById('masterKey').addEventListener('input', updatePreview);
-        });
-
-        /**
-         * Add a new input row to the form
-         */
-        function addRow() {
-            const rowsContainer = document.getElementById('inputRows');
-            const rowId = `row-${rowCounter++}`;
-            
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'input-row';
-            rowDiv.id = rowId;
-            
-            // Create category select
-            const categorySelect = document.createElement('select');
-            categorySelect.addEventListener('change', updatePreview);
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categorySelect.appendChild(option);
-            });
-            
-            // Create title input
-            const titleInput = document.createElement('input');
-            titleInput.type = 'text';
-            titleInput.placeholder = "e.g. 'Google Account' or 'Home Wi-Fi'";
-            titleInput.addEventListener('input', updatePreview);
-            
-            // Create value input
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = 'The actual code or information';
-            valueInput.addEventListener('input', updatePreview);
-            
-            // Create encrypt checkbox
-            const encryptCheckbox = document.createElement('input');
-            encryptCheckbox.type = 'checkbox';
-            encryptCheckbox.addEventListener('change', updatePreview);
-            const encryptLabel = document.createElement('label');
-            encryptLabel.textContent = 'Encrypt';
-            encryptLabel.style.fontSize = '0.8em';
-            
-            // Create QR checkbox
-            const qrCheckbox = document.createElement('input');
-            qrCheckbox.type = 'checkbox';
-            qrCheckbox.addEventListener('change', updatePreview);
-            const qrLabel = document.createElement('label');
-            qrLabel.textContent = 'QR';
-            qrLabel.style.fontSize = '0.8em';
-            
-            // Create remove button
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-btn';
-            removeBtn.textContent = '−';
-            removeBtn.onclick = () => removeRow(rowId);
-            
-            // Append all elements
-            rowDiv.appendChild(categorySelect);
-            rowDiv.appendChild(titleInput);
-            rowDiv.appendChild(valueInput);
-            
-            const encryptDiv = document.createElement('div');
-            encryptDiv.appendChild(encryptCheckbox);
-            encryptDiv.appendChild(encryptLabel);
-            rowDiv.appendChild(encryptDiv);
-            
-            const qrDiv = document.createElement('div');
-            qrDiv.appendChild(qrCheckbox);
-            qrDiv.appendChild(qrLabel);
-            rowDiv.appendChild(qrDiv);
-            
-            rowDiv.appendChild(removeBtn);
-            
-            rowsContainer.appendChild(rowDiv);
-            updatePreview();
-        }
-
-        /**
-         * Remove a specific row
-         */
-        function removeRow(rowId) {
-            const row = document.getElementById(rowId);
-            if (row) {
-                row.remove();
-                updatePreview();
-            }
-        }
-
-        /**
-         * Encrypt text using AES with master key
-         */
-                 function encryptText(text, masterKey) {
-             try {
-                 return CryptoJS.AES.encrypt(text, masterKey).toString();
-             } catch (error) {
-                 return 'ENCRYPTION_ERROR';
-             }
-         }
-
-        /**
-         * Apply color coding to password text
-         */
-        function applyColorCoding(text) {
-            return text.split('').map(char => {
-                if (/\d/.test(char)) {
-                    return `<span class="char-digit">${char}</span>`;
-                } else if (/[a-z]/.test(char)) {
-                    return `<span class="char-lower">${char}</span>`;
-                } else if (/[A-Z]/.test(char)) {
-                    return `<span class="char-upper">${char}</span>`;
-                } else {
-                    return `<span class="char-special">${char}</span>`;
-                }
-            }).join('');
-        }
-
-        /**
-         * Apply sequence boxes to PIN codes
-         */
-        function applySequenceBoxes(text) {
-            return text.split('').map(char => 
-                `<span class="sequence-box">${char}</span>`
-            ).join('');
-        }
-
-        /**
-         * Generate QR code for given text
-         */
-        function generateQRCode(text, containerId) {
-            const canvas = document.createElement('canvas');
-            QRCode.toCanvas(canvas, text, {
-                width: 150,
-                margin: 2,
-                color: {
-                    dark: '#000000',
-                    light: '#FFFFFF'
-                }
-            }, function (error) {
-                if (error) console.error('QR Code generation error:', error);
-            });
-            
-            const qrDiv = document.createElement('div');
-            qrDiv.className = 'qr-code';
-            qrDiv.appendChild(canvas);
-            
-            return qrDiv;
-        }
-
-        /**
-         * Main function to update the preview
-         */
-        function updatePreview() {
-            const previewContent = document.getElementById('previewContent');
-            const masterKey = document.getElementById('masterKey').value;
-            const rows = document.querySelectorAll('.input-row');
-            
-            // Clear preview
-            previewContent.innerHTML = '';
-            
-                         if (rows.length === 0) {
-                 previewContent.innerHTML = '<p style="color: #666; font-style: italic;">No data to display...</p>';
-                 return;
-             }
-            
-            // Group entries by category
-            const categorizedEntries = {};
-            
-            rows.forEach(row => {
-                const category = row.querySelector('select').value;
-                const title = row.querySelector('input[type="text"]').value;
-                const value = row.querySelectorAll('input[type="text"]')[1].value;
-                const shouldEncrypt = row.querySelector('input[type="checkbox"]').checked;
-                const shouldGenerateQR = row.querySelectorAll('input[type="checkbox"]')[1].checked;
-                
-                // Skip empty entries
-                if (!title.trim() && !value.trim()) return;
-                
-                if (!categorizedEntries[category]) {
-                    categorizedEntries[category] = [];
-                }
-                
-                                 categorizedEntries[category].push({
-                     title: title || 'Untitled',
-                     value: value || '',
-                     shouldEncrypt,
-                     shouldGenerateQR
-                 });
-            });
-            
-            // Generate HTML for each category
-            Object.keys(categorizedEntries).forEach(category => {
-                const categorySection = document.createElement('div');
-                categorySection.className = 'category-section';
-                
-                const categoryTitle = document.createElement('h3');
-                categoryTitle.textContent = category;
-                categorySection.appendChild(categoryTitle);
-                
-                categorizedEntries[category].forEach((entry, index) => {
-                    const entryDiv = document.createElement('div');
-                    entryDiv.className = 'entry';
-                    
-                    // Entry title
-                    const entryTitle = document.createElement('div');
-                    entryTitle.className = 'entry-title';
-                    entryTitle.textContent = entry.title;
-                    entryDiv.appendChild(entryTitle);
-                    
-                    // Entry value
-                    const entryValue = document.createElement('div');
-                    entryValue.className = 'entry-value';
-                    
-                    let displayValue = entry.value;
-                    let actualValue = entry.value; // For QR code
-                    
-                    // Handle encryption
-                    if (entry.shouldEncrypt && masterKey && entry.value) {
-                        const encrypted = encryptText(entry.value, masterKey);
-                        displayValue = encrypted;
-                        actualValue = encrypted;
-                        entryValue.innerHTML = `<span class="encrypted">${displayValue}</span><span class="lock-icon">🔒</span>`;
-                                         } else if (entry.value) {
-                         // Apply formatting based on category
-                         if (category === 'User/Password') {
-                             entryValue.innerHTML = applyColorCoding(displayValue);
-                         } else if (category === 'PIN Code') {
-                             entryValue.innerHTML = applySequenceBoxes(displayValue);
-                         } else {
-                             entryValue.textContent = displayValue;
-                         }
-                     } else {
-                         entryValue.innerHTML = '<em style="color: #999;">No value entered</em>';
-                     }
-                    
-                    entryDiv.appendChild(entryValue);
-                    
-                    // Generate QR code if requested
-                    if (entry.shouldGenerateQR && actualValue) {
-                        const qrCode = generateQRCode(actualValue, `qr-${category}-${index}`);
-                        entryDiv.appendChild(qrCode);
-                    }
-                    
-                    categorySection.appendChild(entryDiv);
-                });
-                
-                previewContent.appendChild(categorySection);
-            });
-            
-                         // Show message if no valid entries
-             if (Object.keys(categorizedEntries).length === 0) {
-                 previewContent.innerHTML = '<p style="color: #666; font-style: italic;">Fill out the form on the left to see preview...</p>';
-             }
-        }
+        // Simple script for the introduction page
+        console.log('My Last Key - Introduction page loaded');
     </script>
 </body>
 </html>

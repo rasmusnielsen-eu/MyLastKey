@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Last Key - Decryption Tool</title>
+    <title>My Last Key - Decrypt Tool</title>
     
     <!-- CDN Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -21,176 +21,348 @@
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.secondary {
+            background: #95a5a6;
+        }
+
+        .nav-btn.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .nav-btn.active {
+            background: #e74c3c;
+        }
+
+        .nav-btn.active:hover {
+            background: #c0392b;
+        }
+
+        /* Main Content */
+        .decrypt-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             padding: 40px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #2c3e50;
-            text-align: center;
             margin-bottom: 30px;
-            font-size: 2.2em;
         }
 
-        .form-group {
+        .decrypt-section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .input-group {
             margin-bottom: 25px;
         }
 
-        label {
+        .input-group label {
             display: block;
+            font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: #34495e;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            resize: vertical;
-            transition: border-color 0.3s;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        input[type="password"] {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
             font-size: 1.1em;
-            transition: border-color 0.3s;
         }
 
-        input[type="password"]:focus {
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
             outline: none;
             border-color: #3498db;
+        }
+
+        .input-group textarea {
+            min-height: 120px;
+            resize: vertical;
         }
 
         .decrypt-btn {
-            background: #3498db;
+            background: #27ae60;
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             border-radius: 25px;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             display: block;
-            margin: 20px auto;
+            margin: 30px auto;
+            min-width: 200px;
         }
 
         .decrypt-btn:hover {
-            background: #2980b9;
+            background: #229954;
+            transform: translateY(-2px);
         }
 
-        .decrypt-btn:active {
-            transform: translateY(1px);
+        .decrypt-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        #decryptedResult {
-            margin-top: 25px;
-            padding: 20px;
+        /* Result Section */
+        .result-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .result-content {
             background: #f8f9fa;
+            padding: 20px;
             border-radius: 10px;
-            border-left: 4px solid #3498db;
-            min-height: 60px;
+            border-left: 5px solid #27ae60;
             font-family: 'Courier New', monospace;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            line-height: 1.6;
             word-break: break-all;
         }
 
-        .error {
-            color: #e74c3c;
-            background: #fdf2f2;
-            border-left-color: #e74c3c;
-        }
-
-        .success {
-            color: #27ae60;
-            background: #f0f9f4;
+        .result-content.success {
             border-left-color: #27ae60;
+            background: #e8f5e8;
         }
 
-        .info {
-            background: #e8f4f8;
+        .result-content.error {
+            border-left-color: #e74c3c;
+            background: #fdf2f2;
+            color: #e74c3c;
+        }
+
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .instructions h3 {
             color: #2c3e50;
-            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .security-note {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
             border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #3498db;
+            margin: 20px 0;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
+        .security-note h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                padding: 20px;
+            .header-nav {
+                flex-direction: column;
+                align-items: center;
             }
-            
-            h1 {
-                font-size: 1.8em;
+
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .decrypt-section,
+            .instructions {
+                padding: 25px 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔓 My Last Key - Decryption Tool</h1>
-        
-        <div class="info">
-            <strong>How to use this tool:</strong><br>
-            1. Copy the encrypted text from your key document<br>
-            2. Paste it in the text field below<br>
-            3. Enter your master encryption key<br>
-            4. Click "Decrypt" to see the original text
+        <!-- Header -->
+        <div class="header">
+            <h1>🔓 My Last Key - Decrypt Tool</h1>
+            <p class="subtitle">Decrypt your encrypted information using your master key. Enter the encrypted text and your master key to recover the original data.</p>
+            
+            <div class="header-nav">
+                <a href="index.html" class="nav-btn">
+                    📖 About & Security
+                </a>
+                <a href="index.html#generator" class="nav-btn">
+                    🔑 Create Document
+                </a>
+                <button class="nav-btn active">
+                    🔓 Decrypt Tool
+                </button>
+                <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="nav-btn secondary" target="_blank">
+                    📁 GitHub
+                </a>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="encryptedText">Paste the encrypted text from your document here:</label>
-            <textarea id="encryptedText" placeholder="Paste the encrypted text here..."></textarea>
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>📋 How to Use the Decrypt Tool</h3>
+            <ol>
+                <li><strong>Find the encrypted text</strong> from your printed My Last Key document (it will look like random characters)</li>
+                <li><strong>Copy the encrypted text</strong> exactly as it appears and paste it in the "Encrypted Text" field below</li>
+                <li><strong>Enter your master key</strong> - the same key you used when creating the document</li>
+                <li><strong>Click "Decrypt"</strong> to reveal the original information</li>
+                <li><strong>Copy the result</strong> to use it where needed</li>
+            </ol>
+
+            <div class="security-note">
+                <h4>🔒 Security Reminder</h4>
+                <p><strong>Client-Side Only:</strong> All decryption happens locally in your browser. No data is transmitted to any server.</p>
+                <p><strong>Master Key Required:</strong> Without the correct master key, encrypted data cannot be decrypted by anyone.</p>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="masterKey">Enter the secret Master Encryption Key:</label>
-            <input type="password" id="masterKey" placeholder="Your master encryption key...">
+        <!-- Decrypt Section -->
+        <div class="decrypt-section">
+            <h2>🔐 Decrypt Your Information</h2>
+            
+            <div class="input-group">
+                <label for="masterKey">🔑 Master Key</label>
+                <input type="password" id="masterKey" placeholder="Enter the same master key you used for encryption...">
+            </div>
+
+            <div class="input-group">
+                <label for="encryptedText">📝 Encrypted Text</label>
+                <textarea id="encryptedText" placeholder="Paste the encrypted text from your document here..."></textarea>
+            </div>
+
+            <button class="decrypt-btn" onclick="decryptText()">
+                🔓 Decrypt Information
+            </button>
         </div>
 
-        <button class="decrypt-btn" onclick="decryptText()">🔓 Decrypt</button>
-
-        <div class="form-group">
-            <label for="decryptedResult">Result:</label>
-            <div id="decryptedResult">Click "Decrypt" to see the result...</div>
+        <!-- Result Section -->
+        <div id="resultSection" class="result-section">
+            <h3 id="resultTitle">✅ Decryption Result</h3>
+            <div id="resultContent" class="result-content"></div>
+            <button class="copy-btn" onclick="copyResult()" id="copyBtn" style="display: none;">
+                📋 Copy Result
+            </button>
         </div>
-
-        <a href="index.html" class="back-link">← Back to main application</a>
     </div>
 
     <script>
@@ -198,57 +370,101 @@
          * Decrypt the encrypted text using the master key
          */
         function decryptText() {
-            const encryptedText = document.getElementById('encryptedText').value.trim();
-            const masterKey = document.getElementById('masterKey').value.trim();
-            const resultDiv = document.getElementById('decryptedResult');
-            
-            // Clear previous result classes
-            resultDiv.className = '';
-            
+            const masterKey = document.getElementById('masterKey').value;
+            const encryptedText = document.getElementById('encryptedText').value;
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultContent = document.getElementById('resultContent');
+            const copyBtn = document.getElementById('copyBtn');
+
             // Validate inputs
-            if (!encryptedText) {
-                resultDiv.textContent = 'Error: Please paste the encrypted text.';
-                resultDiv.classList.add('error');
+            if (!masterKey.trim()) {
+                showResult('❌ Error', 'Please enter your master key.', 'error');
                 return;
             }
-            
-            if (!masterKey) {
-                resultDiv.textContent = 'Error: Please enter the master encryption key.';
-                resultDiv.classList.add('error');
+
+            if (!encryptedText.trim()) {
+                showResult('❌ Error', 'Please enter the encrypted text to decrypt.', 'error');
                 return;
             }
-            
+
             try {
-                // Attempt to decrypt the text
-                const decryptedBytes = CryptoJS.AES.decrypt(encryptedText, masterKey);
-                const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                // Attempt to decrypt
+                const decrypted = CryptoJS.AES.decrypt(encryptedText.trim(), masterKey).toString(CryptoJS.enc.Utf8);
                 
-                if (!decryptedText) {
-                    throw new Error('Decryption resulted in empty text');
+                if (!decrypted) {
+                    throw new Error('Decryption failed - invalid key or corrupted data');
                 }
-                
-                // Success
-                resultDiv.textContent = decryptedText;
-                resultDiv.classList.add('success');
-                
+
+                // Show successful result
+                showResult('✅ Decryption Successful', decrypted, 'success');
+                copyBtn.style.display = 'inline-block';
+
             } catch (error) {
-                // Error handling
-                resultDiv.textContent = 'Error: Could not decrypt. Is the key correct? Check that both the encrypted text and master key are entered correctly.';
-                resultDiv.classList.add('error');
-                console.error('Decryption error:', error);
+                // Show error
+                showResult('❌ Decryption Failed', 
+                    'Unable to decrypt the text. Please check:\n\n' +
+                    '• Master key is correct (case-sensitive)\n' +
+                    '• Encrypted text is copied exactly as shown\n' +
+                    '• No extra spaces or characters were added\n\n' +
+                    'Error details: ' + error.message, 
+                    'error');
+                copyBtn.style.display = 'none';
             }
         }
-        
-        // Allow Enter key to trigger decryption
-        document.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                decryptText();
-            }
-        });
-        
-        // Auto-focus on encrypted text field
+
+        /**
+         * Show the result in the result section
+         */
+        function showResult(title, content, type) {
+            const resultSection = document.getElementById('resultSection');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultContent = document.getElementById('resultContent');
+
+            resultTitle.textContent = title;
+            resultContent.textContent = content;
+            resultContent.className = `result-content ${type}`;
+            resultSection.classList.add('show');
+
+            // Scroll to result
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /**
+         * Copy the decrypted result to clipboard
+         */
+        function copyResult() {
+            const resultContent = document.getElementById('resultContent');
+            const text = resultContent.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.getElementById('copyBtn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#3498db';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy to clipboard. Please select and copy the text manually.');
+            });
+        }
+
+        // Add Enter key support for inputs
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('encryptedText').focus();
+            document.getElementById('masterKey').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('encryptedText').focus();
+                }
+            });
+
+            document.getElementById('encryptedText').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    decryptText();
+                }
+            });
         });
     </script>
 </body>
