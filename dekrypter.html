@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Last Key - Decrypt Tool</title>
     
-    <!-- CDN Dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- CDN Dependencies with SRI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" 
+            integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" 
+            crossorigin="anonymous"></script>
     
     <style>
         * {
@@ -367,7 +369,7 @@
 
     <script>
         /**
-         * Decrypt the encrypted text using the master key
+         * Decrypt the encrypted text using the master key with PBKDF2 support
          */
         function decryptText() {
             const masterKey = document.getElementById('masterKey').value;
@@ -389,8 +391,30 @@
             }
 
             try {
-                // Attempt to decrypt
-                const decrypted = CryptoJS.AES.decrypt(encryptedText.trim(), masterKey).toString(CryptoJS.enc.Utf8);
+                const trimmedText = encryptedText.trim();
+                let decrypted = '';
+                
+                // Check if this is new format (with salt:iv:encrypted)
+                if (trimmedText.includes(':') && trimmedText.split(':').length === 3) {
+                    // New PBKDF2 format
+                    const parts = trimmedText.split(':');
+                    const salt = CryptoJS.enc.Hex.parse(parts[0]);
+                    const iv = CryptoJS.enc.Hex.parse(parts[1]);
+                    const encrypted = parts[2];
+                    
+                    // Derive key using PBKDF2 with same parameters as encryption
+                    const key = CryptoJS.PBKDF2(masterKey, salt, {
+                        keySize: 256 / 32,
+                        iterations: 250000,
+                        hasher: CryptoJS.algo.SHA256
+                    });
+                    
+                    // Decrypt with derived key and IV
+                    decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv }).toString(CryptoJS.enc.Utf8);
+                } else {
+                    // Legacy format (direct password-based encryption)
+                    decrypted = CryptoJS.AES.decrypt(trimmedText, masterKey).toString(CryptoJS.enc.Utf8);
+                }
                 
                 if (!decrypted) {
                     throw new Error('Decryption failed - invalid key or corrupted data');
@@ -406,7 +430,8 @@
                     'Unable to decrypt the text. Please check:\n\n' +
                     '• Master key is correct (case-sensitive)\n' +
                     '• Encrypted text is copied exactly as shown\n' +
-                    '• No extra spaces or characters were added\n\n' +
+                    '• No extra spaces or characters were added\n' +
+                    '• Text was encrypted with a compatible version\n\n' +
                     'Error details: ' + error.message, 
                     'error');
                 copyBtn.style.display = 'none';

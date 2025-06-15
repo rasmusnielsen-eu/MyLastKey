@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Last Key - Create Document</title>
     
-    <!-- CDN Dependencies -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs/qrcode.min.js"></script>
+    <!-- CDN Dependencies with SRI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" 
+            integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" 
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs/qrcode.min.js" 
+            integrity="sha512-Ht/7qVK6wZdeRLMFxzjTkn9OuEfwhMBqZi9Tp6M8fx6OiC2rIep+Aq+UgnrJqfnQ3L/k9IQeGJ/VsNJdJWMQIg==" 
+            crossorigin="anonymous"></script>
     
     <style>
         * {
@@ -1565,15 +1569,34 @@
         }
 
         /**
-         * Encrypt text using AES with master key
+         * Encrypt text using AES with strong key derivation (PBKDF2)
          */
         function encryptText(text, masterKey) {
             try {
                 if (!masterKey) {
                     throw new Error('Master key required');
                 }
-                return CryptoJS.AES.encrypt(text, masterKey).toString();
+                
+                // Generate random salt and IV
+                const salt = CryptoJS.lib.WordArray.random(128 / 8);
+                const iv = CryptoJS.lib.WordArray.random(128 / 8);
+                
+                // Derive key using PBKDF2 with SHA-256 and 250,000 iterations
+                const key = CryptoJS.PBKDF2(masterKey, salt, {
+                    keySize: 256 / 32,
+                    iterations: 250000,
+                    hasher: CryptoJS.algo.SHA256
+                });
+                
+                // Encrypt with derived key
+                const encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
+                
+                // Combine salt, iv, and encrypted data
+                const combined = salt.toString() + ':' + iv.toString() + ':' + encrypted.toString();
+                
+                return combined;
             } catch (error) {
+                console.error('Encryption error:', error);
                 return 'ENCRYPTION_ERROR';
             }
         }
@@ -1636,11 +1659,53 @@
         }
 
         /**
-         * Generate QR code for given text
+         * Sanitize input for QR code generation
+         */
+        function sanitizeQRInput(text) {
+            if (!text || typeof text !== 'string') {
+                return '';
+            }
+            
+            // Check for dangerous javascript: URLs (case-insensitive)
+            if (text.toLowerCase().startsWith('javascript:')) {
+                console.warn('Blocked potentially dangerous javascript: URL in QR code');
+                return '[BLOCKED: Potentially dangerous content]';
+            }
+            
+            // Additional sanitization - remove other potentially dangerous schemes
+            const dangerousSchemes = ['data:', 'vbscript:', 'file:', 'about:'];
+            const lowerText = text.toLowerCase();
+            
+            for (const scheme of dangerousSchemes) {
+                if (lowerText.startsWith(scheme)) {
+                    console.warn(`Blocked potentially dangerous ${scheme} URL in QR code`);
+                    return '[BLOCKED: Potentially dangerous content]';
+                }
+            }
+            
+            return text;
+        }
+
+        /**
+         * Generate QR code for given text with input sanitization
          */
         function generateQRCode(text, containerId) {
             return new Promise((resolve, reject) => {
                 try {
+                    // Sanitize input before generating QR code
+                    const sanitizedText = sanitizeQRInput(text);
+                    
+                    if (!sanitizedText || sanitizedText.startsWith('[BLOCKED:')) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.style.color = '#e74c3c';
+                        errorDiv.style.fontStyle = 'italic';
+                        errorDiv.style.textAlign = 'center';
+                        errorDiv.style.padding = '10px';
+                        errorDiv.textContent = 'QR code blocked due to potentially dangerous content';
+                        resolve(errorDiv);
+                        return;
+                    }
+                    
                     const qrDiv = document.createElement('div');
                     qrDiv.className = 'qr-code';
                     qrDiv.style.display = 'flex';
@@ -1655,7 +1720,7 @@
                     
                     // Generate QR code using davidshimjs-qrcodejs
                     const qrcode = new QRCode(qrContainer, {
-                        text: text,
+                        text: sanitizedText,
                         width: 200,
                         height: 200,
                         correctLevel: QRCode.CorrectLevel.M
@@ -2064,9 +2129,18 @@
             qrcodeDiv.innerHTML = ""; // Clear previous QR code
             
             try {
+                // Sanitize the JSON data before generating QR code
+                const sanitizedData = sanitizeQRInput(jsonData);
+                
+                if (!sanitizedData || sanitizedData.startsWith('[BLOCKED:')) {
+                    alert('❌ Export QR code blocked due to potentially dangerous content in the data.');
+                    qrContainer.style.display = 'none';
+                    return;
+                }
+                
                 // Always create a new QR code instance to avoid conflicts
                 const newQrCode = new QRCode(qrcodeDiv, {
-                    text: jsonData,
+                    text: sanitizedData,
                     width: 256,
                     height: 256,
                     correctLevel: QRCode.CorrectLevel.L // Level L for max data capacity
