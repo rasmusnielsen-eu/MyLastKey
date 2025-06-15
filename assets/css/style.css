@@ -16,6 +16,10 @@
 }
 
 /*-- General Styles --*/
+html, body {
+    background: var(--color-background) !important;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -25,7 +29,6 @@
 body {
     font-family: var(--font-body);
     line-height: 1.7;
-    background: var(--color-background); /* Use background to override gradients */
     color: var(--color-text);
 }
 
@@ -340,8 +343,14 @@ a:hover { text-decoration: underline; }
     background-color: #f8f9fa;
     border-radius: 8px;
     margin-bottom: 20px;
-    flex-wrap: wrap; /* Add for responsiveness */
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .toggle-switch {
@@ -421,12 +430,16 @@ a:hover { text-decoration: underline; }
         left: 0;
         top: 0;
         width: 100%;
+        border: none;
     }
+    /* Selectively hide the h2 and the p that immediately follows it */
+    .preview-section > h2:first-child, .preview-section > h2:first-child + p {
+        visibility: hidden;
+        display: none;
+    }
+    /* Hide all other non-essential elements */
     .page-header, .form-section, .page-footer, .modal-overlay {
         display: none !important;
-    }
-    #output {
-        border: none;
     }
 }
 
