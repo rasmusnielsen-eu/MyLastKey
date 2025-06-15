@@ -789,6 +789,171 @@
             gap: 15px;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .import-input-group {
+            margin-bottom: 20px;
+        }
+
+        .import-input-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .import-input-group textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            resize: vertical;
+            transition: border-color 0.3s;
+            background: #f8f9fa;
+        }
+
+        .import-input-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .modal-footer {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .modal-btn-primary {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .modal-btn-secondary {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-1px);
+        }
+
         /* Mobile Responsive Design */
         @media (max-width: 800px) {
             .container {
@@ -821,6 +986,35 @@
             
             .import-export-group {
                 text-align: left;
+            }
+
+            /* Modal mobile styles */
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .modal-header {
+                padding: 15px 20px;
+            }
+
+            .modal-header h3 {
+                font-size: 1.1em;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .modal-footer {
+                padding: 15px 20px;
+                flex-direction: column;
+            }
+
+            .modal-btn-primary,
+            .modal-btn-secondary {
+                width: 100%;
+                justify-content: center;
             }
             
             .view-print-row {
@@ -974,20 +1168,16 @@
             <!-- Import & Export Box -->
             <div class="control-box">
                 <div class="import-export-group">
-                    <div class="import-section">
-                        <label for="importText" style="font-size: 0.9em; font-weight: 600; color: #2c3e50; margin-bottom: 5px; display: block;">📥 Import Data</label>
-                        <textarea id="importText" placeholder="Paste export string here..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.8em; resize: vertical; font-family: monospace;"></textarea>
-                        <button id="importButton" class="import-btn-small" onclick="importFromText()" style="margin-top: 5px; width: 100%;">
+                    <div class="import-export-buttons">
+                        <button id="openImportModal" class="import-btn-small" onclick="openImportModal()" style="width: 100%; margin-bottom: 10px;">
                             📥 Import Data
                         </button>
-                    </div>
-                    <div class="export-section" style="margin-top: 10px;">
                         <button id="generateExportQrButton" class="export-btn-small" onclick="generateExportQR()" style="width: 100%;">
                             📤 Generate Export QR
                         </button>
                     </div>
                     <div class="help-text" style="margin-top: 10px; font-size: 0.75em; color: #666; line-height: 1.3;">
-                        <strong>Import:</strong> Paste the export string from a previous session or scan a QR code and copy the text.<br>
+                        <strong>Import:</strong> Opens a dialog to paste export strings from previous sessions or QR codes.<br>
                         <strong>Export:</strong> Creates a QR code containing all your data for future import.
                     </div>
                 </div>
@@ -1053,10 +1243,31 @@
                     <p id="qrDataInfo" style="font-size: 12px; color: #666; margin-top: 10px;"></p>
                 </div>
             </div>
-        </div>
+                </div>
     </div>
 
-
+    <!-- Import Modal -->
+    <div id="importModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📥 Import Data</h3>
+                <button class="modal-close" onclick="closeImportModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">
+                    Paste your export string below. You can get this by scanning a QR code from a previous export or copying a saved export string.
+                </p>
+                <div class="import-input-group">
+                    <label for="modalImportText">Export String:</label>
+                    <textarea id="modalImportText" placeholder="Paste your export string here..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn-secondary" onclick="closeImportModal()">Cancel</button>
+                <button class="modal-btn-primary" onclick="importFromModal()">📥 Import Data</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Global variables
@@ -1080,8 +1291,25 @@
             // Add event listener for master key changes
             document.getElementById('masterKey').addEventListener('input', updatePreview);
             
-            // Add event listener for import button
-            document.getElementById('importButton').addEventListener('click', importFromText);
+            // Add event listener for import modal
+            document.getElementById('openImportModal').addEventListener('click', openImportModal);
+            
+            // Add keyboard support for modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('importModal');
+                    if (modal.classList.contains('show')) {
+                        closeImportModal();
+                    }
+                }
+            });
+            
+            // Add click outside to close modal
+            document.getElementById('importModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImportModal();
+                }
+            });
         });
 
         /**
@@ -1416,12 +1644,38 @@
         }
 
         /**
-         * Import data from text input
+         * Open import modal
          */
-        function importFromText() {
-            console.log("Starting text import...");
+        function openImportModal() {
+            const modal = document.getElementById('importModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
             
-            const importTextArea = document.getElementById('importText');
+            // Focus on textarea after animation
+            setTimeout(() => {
+                document.getElementById('modalImportText').focus();
+            }, 300);
+        }
+
+        /**
+         * Close import modal
+         */
+        function closeImportModal() {
+            const modal = document.getElementById('importModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            
+            // Clear the textarea
+            document.getElementById('modalImportText').value = '';
+        }
+
+        /**
+         * Import data from modal
+         */
+        function importFromModal() {
+            console.log("Starting modal import...");
+            
+            const importTextArea = document.getElementById('modalImportText');
             if (!importTextArea) {
                 alert("❌ Error: Import text area not found.");
                 return;
@@ -1446,8 +1700,8 @@
                 // Populate form with imported data
                 populateFormFromData(data);
                 
-                // Clear the import text area after successful import
-                importTextArea.value = '';
+                // Close modal and clear textarea
+                closeImportModal();
                 
             } catch (error) {
                 console.error("Error processing import data:", error);
