@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Last Key - Create Document</title>
-    
+    <title>Create Your Plan - My Last Key</title>
+    <link rel="stylesheet" href="assets/css/style.css">
     <!-- CDN Dependencies with SRI -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" 
             integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" 
@@ -1287,924 +1287,213 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <h1>🔑 My Last Key - Create Document</h1>
-            <p class="subtitle">Create your secure document with encryption and QR codes</p>
-            
-            <div class="header-nav">
-                <a href="./index.html" class="nav-btn">
-                    📖 About & Security
-                </a>
-                <button class="nav-btn active">
-                    🔑 Create Document
-                </button>
-                <a href="./dekrypter.html" class="nav-btn secondary">
-                    🔓 Decrypt Tool
-                </a>
-                <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="nav-btn secondary" target="_blank">
-                    📁 GitHub
-                </a>
-            </div>
-        </div>
+        <header class="page-header">
+            <h1>Create Your Plan</h1>
+            <p class="subtitle">Add all the information your loved ones might need. Everything is processed locally in your browser and is never sent to a server.</p>
+            <nav class="main-nav">
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+            </nav>
+        </header>
 
-        <!-- Top Controls - Split into 3 boxes -->
-        <div class="top-controls">
-            <!-- Master Key Box -->
-            <div class="control-box">
-                <div class="master-key-group">
-                    <label for="masterKey">🔑 Master Encryption Key</label>
-                    <input type="password" id="masterKey" class="master-key-input" placeholder="Enter your secret master key...">
-                    <small style="color: #666; font-style: italic;">Required for encryption. Both you and your trusted person must know this key.</small>
-                    <div class="help-text" style="margin-top: 8px; font-size: 0.75em; color: #666; line-height: 1.3;">
-                        <strong>Tip:</strong> Use a strong, memorable passphrase. Without this key, encrypted data cannot be recovered.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Import & Export Box -->
-            <div class="control-box">
-                <div class="import-export-group">
-                    <div class="import-export-buttons">
-                        <button id="openImportModal" class="import-btn-small" onclick="openImportModal()">
-                            📥 Import Data
-                        </button>
-                        <button id="generateExportQrButton" class="export-btn-small" onclick="generateExportQR()">
-                            📤 Generate Export QR
-                        </button>
-                    </div>
-                    <div class="help-text" style="margin-top: 10px; font-size: 0.75em; color: #666; line-height: 1.3;">
-                        <strong>Import:</strong> Opens a dialog to paste export strings from previous sessions or QR codes.<br>
-                        <strong>Export:</strong> Creates a QR code containing all your data for future import.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Enhanced View & Print Box -->
-            <div class="control-box">
-                <div class="view-print-group">
-                    <div class="view-print-row">
-                        <div class="toggle-group">
-                            <span class="toggle-label">Enhanced View</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="enhancedToggle" checked onchange="updatePreview()">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <button class="print-btn" onclick="printDocument()">
-                            🖨️ Print Document
-                        </button>
-                    </div>
-                    <div class="help-text" style="margin-top: 10px; font-size: 0.75em; color: #666; line-height: 1.3;">
-                        <strong>Enhanced View:</strong> Shows color-coded passwords for better readability.<br>
-                        <strong>Print:</strong> Creates a physical backup of your document.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Layout -->
-        <div class="main-layout">
+        <main>
             <!-- Form Section -->
-            <div class="form-section">
-                <h2>📝 Add Information</h2>
+            <section class="form-section">
+                <fieldset class="encryption-fieldset">
+                    <legend>Optional: Add Encryption</legend>
+                    <input type="password" id="masterKey" placeholder="Enter a strong Master Key here..." style="width: 100%; padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid #ddd;">
+                    <p class="disclaimer">
+                        <strong>Important:</strong> If you set a Master Key, you MUST remember it. It cannot be recovered. 
+                        This key will be used to encrypt any items you mark as "Encrypt".
+                    </p>
+                </fieldset>
                 
-                <!-- QR Reminder (always visible) -->
-                <div id="qrReminder" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #856404;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.2em;">💡</span>
-                        <div>
-                            <strong>Reminder:</strong> When you're done adding entries, remember to click <strong>"Generate Export QR"</strong> to create a QR code. You can then copy the export string from the QR code for future import!
-                        </div>
-                    </div>
+                <div id="input-container" style="margin-top: 20px;">
+                    <!-- Dynamic inputs will be added here -->
                 </div>
-                
-                <div id="inputRows">
-                    <!-- Initial row will be added by JavaScript -->
-                </div>
-                <button class="add-row-btn" onclick="addRow()">+ Add New Entry</button>
-            </div>
+                <br>
+                <button onclick="addRow()" class="btn btn-primary">Add Information Row</button>
+            </section>
 
             <!-- Preview Section -->
-            <div class="preview-section">
-                <h2 class="preview-title">👁️ Document Preview</h2>
-                
-                <!-- Print Header (only visible when printing) -->
-                <div class="print-header">
-                    <h1 class="print-title">🔑 My Last Key</h1>
-                    <p class="print-date" id="printDate"></p>
-                </div>
-                
-                <div id="previewContent">
-                    <p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>
-                </div>
-                
-                <!-- Export QR Code Container (hidden by default) -->
-                <div id="exportQrCodeContainer" style="display: none;">
-                    <h3>📤 Export QR Code (for future import)</h3>
-                    <p><small>Print this page. Next time you need to update, scan this code with any QR scanner app, copy the text, and paste it in the Import Data field above.</small></p>
-                    <div id="qrcode"></div>
-                    <p id="qrDataInfo" style="font-size: 12px; color: #666; margin-top: 10px;"></p>
-                </div>
-            </div>
-                </div>
-    </div>
-
-    <!-- Import Modal -->
-    <div id="importModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>📥 Import Data</h3>
-                <button class="modal-close" onclick="closeImportModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-description">
-                    Paste your export string below. You can get this by scanning a QR code from a previous export or copying a saved export string.
-                </p>
-                <div class="import-input-group">
-                    <label for="modalImportText">Export String:</label>
-                    <textarea id="modalImportText" placeholder="Paste your export string here..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn-secondary" onclick="closeImportModal()">Cancel</button>
-                <button class="modal-btn-primary" onclick="importFromModal()">📥 Import Data</button>
-            </div>
-        </div>
+            <section class="preview-section">
+                <h2>Live Preview</h2>
+                <p>This is how your final document will look. You can print this page directly. Your data is updated live as you type.</p>
+                <div id="output" style="margin-top: 20px; border: 1px solid #eee; padding: 20px; background: #fff; border-radius: 8px;"></div>
+                <h3 style="margin-top: 30px;">Export & Import Data</h3>
+                <p>The QR code below contains all your data. You can scan it with a standard QR app to copy the text, or use our Decrypt tool to import and decrypt it later.</p>
+                <div id="qrcode" style="display: flex; justify-content: center; padding: 20px; background: white; margin-top: 15px;"></div>
+            </section>
+        </main>
     </div>
 
     <script>
-        // Global variables
         let rowCounter = 0;
-        let qrcode = null;
-
-        // Category options
-        const categories = [
-            'User/Password',
-            'PIN Code',
-            'Security Question',
-            'Wi-Fi Code',
-            'Note/Text',
-            'License Key'
-        ];
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            addRow(); // Add initial row
-            
-            // Add event listener for master key changes
-            document.getElementById('masterKey').addEventListener('input', updatePreview);
-            
-            // Add event listener for import modal
-            document.getElementById('openImportModal').addEventListener('click', openImportModal);
-            
-            // Add keyboard support for modal
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    const modal = document.getElementById('importModal');
-                    if (modal.classList.contains('show')) {
-                        closeImportModal();
-                    }
-                }
-            });
-            
-            // Add click outside to close modal
-            document.getElementById('importModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeImportModal();
-                }
-            });
-            
-            // Initialize print date
-            updatePrintDate();
+        const qrcode = new QRCode(document.getElementById("qrcode"), {
+            width: 256,
+            height: 256,
+            correctLevel: QRCode.CorrectLevel.H
         });
 
-        /**
-         * Add a new input row to the form
-         */
-        function addRow() {
-            const rowsContainer = document.getElementById('inputRows');
-            const rowId = `row-${rowCounter++}`;
-            
-
-            
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'input-row';
-            rowDiv.id = rowId;
-            
-            // Create category select
-            const categorySelect = document.createElement('select');
-            categorySelect.addEventListener('change', updatePreview);
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categorySelect.appendChild(option);
-            });
-            
-            // Create title input
-            const titleInput = document.createElement('input');
-            titleInput.type = 'text';
-            titleInput.placeholder = "e.g. 'Google Account' or 'Home Wi-Fi'";
-            titleInput.addEventListener('input', () => {
-                updatePreview();
-            });
-            
-            // Create value input
-            const valueInput = document.createElement('input');
-            valueInput.type = 'text';
-            valueInput.placeholder = 'The actual code or information';
-            valueInput.addEventListener('input', () => {
-                updatePreview();
-            });
-            
-            // Create encrypt checkbox
-            const encryptDiv = document.createElement('div');
-            encryptDiv.className = 'checkbox-group';
-            const encryptCheckbox = document.createElement('input');
-            encryptCheckbox.type = 'checkbox';
-            encryptCheckbox.addEventListener('change', updatePreview);
-            const encryptLabel = document.createElement('label');
-            encryptLabel.textContent = 'Encrypt';
-            encryptDiv.appendChild(encryptCheckbox);
-            encryptDiv.appendChild(encryptLabel);
-            
-            // Create QR checkbox
-            const qrDiv = document.createElement('div');
-            qrDiv.className = 'checkbox-group';
-            const qrCheckbox = document.createElement('input');
-            qrCheckbox.type = 'checkbox';
-            qrCheckbox.addEventListener('change', updatePreview);
-            const qrLabel = document.createElement('label');
-            qrLabel.textContent = 'QR';
-            qrDiv.appendChild(qrCheckbox);
-            qrDiv.appendChild(qrLabel);
-            
-            // Create remove button
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-btn';
-            removeBtn.textContent = '×';
-            removeBtn.onclick = () => removeRow(rowId);
-            
-            // Append all elements
-            rowDiv.appendChild(categorySelect);
-            rowDiv.appendChild(titleInput);
-            rowDiv.appendChild(valueInput);
-            rowDiv.appendChild(encryptDiv);
-            rowDiv.appendChild(qrDiv);
-            rowDiv.appendChild(removeBtn);
-            
-            rowsContainer.appendChild(rowDiv);
-            updatePreview();
+        function addRow(type = 'user-pass') {
+            rowCounter++;
+            const container = document.getElementById('input-container');
+            const div = document.createElement('div');
+            div.className = 'input-row';
+            div.id = `row-${rowCounter}`;
+            div.innerHTML = `
+                <select onchange="updateRowType(this, ${rowCounter})">
+                    <option value="user-pass" ${type === 'user-pass' ? 'selected' : ''}>User/Password</option>
+                    <option value="pin" ${type === 'pin' ? 'selected' : ''}>PIN Code</option>
+                    <option value="text" ${type === 'text' ? 'selected' : ''}>Note/Text</option>
+                </select>
+                <input type="text" placeholder="Label/Title">
+                <input type="text" placeholder="Value">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="encrypt-check-${rowCounter}"> <label for="encrypt-check-${rowCounter}">Encrypt</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="qr-check-${rowCounter}"> <label for="qr-check-${rowCounter}">QR Code</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="enhanced-check-${rowCounter}" ${type === 'user-pass' ? 'checked' : ''}> <label for="enhanced-check-${rowCounter}">Enhanced View</label>
+                </div>
+                <button class="remove-btn" onclick="removeRow(${rowCounter})">×</button>
+            `;
+            container.appendChild(div);
+            updateEventListeners();
         }
 
-        /**
-         * Remove a specific row
-         */
-        function removeRow(rowId) {
-            const row = document.getElementById(rowId);
-            if (row) {
-                row.remove();
-                updatePreview();
+        function updateRowType(selectElement, rowId) {
+            const row = document.getElementById(`row-${rowId}`);
+            const enhancedCheckbox = row.querySelector(`#enhanced-check-${rowId}`);
+            if (selectElement.value === 'user-pass') {
+                enhancedCheckbox.checked = true;
+                enhancedCheckbox.disabled = false;
+            } else {
+                enhancedCheckbox.checked = false;
+                enhancedCheckbox.disabled = true;
             }
+            processInputs();
+        }
+        
+        function removeRow(id) {
+            document.getElementById(`row-${id}`).remove();
+            processInputs();
         }
 
-        /**
-         * Encrypt text using AES with strong key derivation (PBKDF2)
-         */
+        function updateEventListeners() {
+            const inputs = document.querySelectorAll('#input-container input, #input-container select, #masterKey');
+            inputs.forEach(input => {
+                input.addEventListener('input', processInputs);
+                input.addEventListener('change', processInputs);
+            });
+        }
+        
+        function sanitizeQRInput(str) {
+             // Allow data: URLs for export/import, but block malicious schemes
+            if (str.startsWith("data:")) return str;
+            // Basic sanitization to prevent generating QR codes with malicious JS payloads
+            return str.replace(/<|>/g, "");
+        }
+
         function encryptText(text, masterKey) {
+            if (!masterKey) return text;
             try {
-                if (!masterKey) {
-                    throw new Error('Master key required');
-                }
-                
-                // Generate random salt and IV
                 const salt = CryptoJS.lib.WordArray.random(128 / 8);
                 const iv = CryptoJS.lib.WordArray.random(128 / 8);
-                
-                // Derive key using PBKDF2 with SHA-256 and 250,000 iterations
                 const key = CryptoJS.PBKDF2(masterKey, salt, {
                     keySize: 256 / 32,
                     iterations: 250000,
                     hasher: CryptoJS.algo.SHA256
                 });
-                
-                // Encrypt with derived key
                 const encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
-                
-                // Combine salt, iv, and encrypted data
-                const combined = salt.toString() + ':' + iv.toString() + ':' + encrypted.toString();
-                
-                return combined;
-            } catch (error) {
-                console.error('Encryption error:', error);
-                return 'ENCRYPTION_ERROR';
+                return `${salt.toString()}:${iv.toString()}:${encrypted.toString()}`;
+            } catch (e) {
+                console.error("Encryption failed:", e);
+                return "Encryption Error!";
             }
         }
 
-        /**
-         * Apply enhanced color coding to password text with table view
-         */
-        function applyColorCoding(text, enhanced = true) {
-            if (!enhanced) {
-                return `<span class="simple-text">${text}</span>`;
+        function formatEnhanced(value) {
+            let table = '<table class="password-table"><tr>';
+            for (let char of value) {
+                let className = 'char-cell ';
+                if (/\d/.test(char)) className += 'digit';
+                else if (/[a-z]/.test(char)) className += 'lower';
+                else if (/[A-Z]/.test(char)) className += 'upper';
+                else className += 'special';
+                table += `<td class="${className}">${char}</td>`;
             }
-            
-            // Create table view for enhanced mode
-            const chars = text.split('');
-            let tableHTML = '<div class="password-table">';
-            
-            // Create rows of 10 characters each
-            for (let i = 0; i < chars.length; i += 10) {
-                const rowChars = chars.slice(i, i + 10);
-                
-                // Number row
-                tableHTML += '<div class="password-row">';
-                tableHTML += '<div class="char-number">#</div>';
-                rowChars.forEach((char, index) => {
-                    tableHTML += `<div class="char-number">${i + index + 1}</div>`;
-                });
-                tableHTML += '</div>';
-                
-                // Character row
-                tableHTML += '<div class="password-row">';
-                tableHTML += '<div class="char-number">Char</div>';
-                rowChars.forEach(char => {
-                    let className = '';
-                    if (/\d/.test(char)) {
-                        className = 'digit';
-                    } else if (/[a-z]/.test(char)) {
-                        className = 'lower';
-                    } else if (/[A-Z]/.test(char)) {
-                        className = 'upper';
-                    } else {
-                        className = 'special';
-                    }
-                    
-                    tableHTML += `<div class="char-cell ${className}">${char}</div>`;
-                });
-                tableHTML += '</div>';
+            table += '</tr><tr>';
+            for (let i = 1; i <= value.length; i++) {
+                table += `<td class="char-number">${i}</td>`;
             }
-            
-            tableHTML += '</div>';
-            return tableHTML;
+            table += '</tr></table>';
+            return table;
         }
 
-        /**
-         * Apply sequence boxes to PIN codes
-         */
-        function applySequenceBoxes(text) {
-            return text.split('').map(char => 
-                `<span class="sequence-box">${char}</span>`
-            ).join('');
-        }
-
-        /**
-         * Sanitize input for QR code generation
-         */
-        function sanitizeQRInput(text) {
-            if (!text || typeof text !== 'string') {
-                return '';
-            }
-            
-            // Check for dangerous javascript: URLs (case-insensitive)
-            if (text.toLowerCase().startsWith('javascript:')) {
-                console.warn('Blocked potentially dangerous javascript: URL in QR code');
-                return '[BLOCKED: Potentially dangerous content]';
-            }
-            
-            // Additional sanitization - only block truly dangerous schemes
-            const dangerousSchemes = ['vbscript:', 'file:', 'about:javascript'];
-            const lowerText = text.toLowerCase();
-            
-            for (const scheme of dangerousSchemes) {
-                if (lowerText.startsWith(scheme)) {
-                    console.warn(`Blocked potentially dangerous ${scheme} URL in QR code`);
-                    return '[BLOCKED: Potentially dangerous content]';
-                }
-            }
-            
-            // Allow data: URLs and normal content
-            
-            return text;
-        }
-
-        /**
-         * Generate QR code for given text with input sanitization
-         */
-        function generateQRCode(text, containerId) {
-            return new Promise((resolve, reject) => {
-                try {
-                    // Sanitize input before generating QR code
-                    const sanitizedText = sanitizeQRInput(text);
-                    
-                    if (!sanitizedText || sanitizedText.startsWith('[BLOCKED:')) {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.style.color = '#e74c3c';
-                        errorDiv.style.fontStyle = 'italic';
-                        errorDiv.style.textAlign = 'center';
-                        errorDiv.style.padding = '10px';
-                        errorDiv.textContent = 'QR code blocked due to potentially dangerous content';
-                        resolve(errorDiv);
-                        return;
-                    }
-                    
-                    const qrDiv = document.createElement('div');
-                    qrDiv.className = 'qr-code';
-                    qrDiv.style.display = 'flex';
-                    qrDiv.style.justifyContent = 'center';
-                    qrDiv.style.marginTop = '10px';
-                    
-                    // Create a unique container for this QR code
-                    const qrContainer = document.createElement('div');
-                    qrContainer.style.width = '200px';
-                    qrContainer.style.height = '200px';
-                    qrDiv.appendChild(qrContainer);
-                    
-                    // Generate QR code using davidshimjs-qrcodejs
-                    const qrcode = new QRCode(qrContainer, {
-                        text: sanitizedText,
-                        width: 200,
-                        height: 200,
-                        correctLevel: QRCode.CorrectLevel.M
-                    });
-                    
-                    resolve(qrDiv);
-                    
-                } catch (error) {
-                    console.error('QR Code generation error:', error);
-                    reject(error);
-                }
-            });
-        }
-
-        /**
-         * Validate encryption requirements
-         */
-        function validateEncryption(shouldEncrypt, masterKey) {
-            if (shouldEncrypt && !masterKey.trim()) {
-                return 'Master encryption key is required for encryption';
-            }
-            return null;
-        }
-
-        /**
-         * Collect all form data for export
-         */
-        function collectAllFormData() {
+        function processInputs() {
             const rows = document.querySelectorAll('.input-row');
             const masterKey = document.getElementById('masterKey').value;
-            const enhanced = document.getElementById('enhancedToggle').checked;
-            
-            const formData = {
-                masterKey: masterKey,
-                enhanced: enhanced,
-                entries: []
-            };
-            
+            let outputHTML = '';
+            let combinedQRData = [];
+
             rows.forEach(row => {
-                const category = row.querySelector('select').value;
-                const title = row.querySelector('input[type="text"]').value;
-                const value = row.querySelectorAll('input[type="text"]')[1].value;
-                const shouldEncrypt = row.querySelector('input[type="checkbox"]').checked;
-                const shouldGenerateQR = row.querySelectorAll('input[type="checkbox"]')[1].checked;
-                
-                // Only include non-empty entries
-                if (title.trim() || value.trim()) {
-                    formData.entries.push({
-                        category: category,
-                        title: title,
-                        value: value,
-                        shouldEncrypt: shouldEncrypt,
-                        shouldGenerateQR: shouldGenerateQR
-                    });
-                }
-            });
-            
-            return formData;
-        }
+                const select = row.querySelector('select');
+                const inputs = row.querySelectorAll('input[type="text"]');
+                const label = inputs[0].value;
+                let value = inputs[1].value;
+                const isEncrypted = row.querySelector('input[type="checkbox"][id^="encrypt-check"]').checked;
+                const isQR = row.querySelector('input[type="checkbox"][id^="qr-check"]').checked;
+                const isEnhanced = row.querySelector('input[type="checkbox"][id^="enhanced-check"]').checked;
 
-        /**
-         * Populate form from imported data
-         */
-        function populateFormFromData(data) {
-            try {
-                console.log("Starting form population with data:", data);
-                
-                // Clear existing rows
-                const rowsContainer = document.getElementById('inputRows');
-                if (!rowsContainer) {
-                    throw new Error("Input rows container not found");
-                }
-                
-                rowsContainer.innerHTML = '';
-                rowCounter = 0;
-                
-                // Set master key and enhanced toggle
-                if (data.masterKey) {
-                    const masterKeyInput = document.getElementById('masterKey');
-                    if (masterKeyInput) {
-                        masterKeyInput.value = data.masterKey;
-                        console.log("Master key set");
-                    }
-                }
-                
-                if (typeof data.enhanced === 'boolean') {
-                    const enhancedToggle = document.getElementById('enhancedToggle');
-                    if (enhancedToggle) {
-                        enhancedToggle.checked = data.enhanced;
-                        console.log("Enhanced toggle set to:", data.enhanced);
-                    }
-                }
-                
-                // Add entries
-                if (data.entries && data.entries.length > 0) {
-                    console.log(`Adding ${data.entries.length} entries`);
+                if (label || value) {
+                    const displayValue = isEncrypted ? encryptText(value, masterKey) : value;
+
+                    outputHTML += `<h3>${label}</h3>`;
                     
-                    data.entries.forEach((entry, index) => {
-                        try {
-                            addRow();
-                            const lastRow = document.querySelector('.input-row:last-child');
-                            
-                            if (!lastRow) {
-                                throw new Error(`Failed to create row ${index + 1}`);
-                            }
-                            
-                            // Set values with error checking
-                            const selectElement = lastRow.querySelector('select');
-                            const textInputs = lastRow.querySelectorAll('input[type="text"]');
-                            const checkboxes = lastRow.querySelectorAll('input[type="checkbox"]');
-                            
-                            if (selectElement) selectElement.value = entry.category || 'User/Password';
-                            if (textInputs[0]) textInputs[0].value = entry.title || '';
-                            if (textInputs[1]) textInputs[1].value = entry.value || '';
-                            if (checkboxes[0]) checkboxes[0].checked = entry.shouldEncrypt || false;
-                            if (checkboxes[1]) checkboxes[1].checked = entry.shouldGenerateQR || false;
-                            
-                            console.log(`Entry ${index + 1} populated successfully`);
-                            
-                        } catch (entryError) {
-                            console.error(`Error adding entry ${index + 1}:`, entryError);
-                        }
-                    });
-                } else {
-                    console.log("No entries found, adding empty row");
-                    addRow();
-                }
-                
-                // Update preview
-                updatePreview();
-                
-                console.log("Form population completed successfully");
-                alert('✅ Data imported successfully!');
-                
-            } catch (error) {
-                console.error('Error populating form:', error);
-                alert('❌ Error importing data: ' + error.message);
-                
-                // Ensure at least one row exists
-                try {
-                    if (document.querySelectorAll('.input-row').length === 0) {
-                        addRow();
-                    }
-                } catch (fallbackError) {
-                    console.error('Fallback row creation failed:', fallbackError);
-                }
-            }
-        }
-
-        /**
-         * Open import modal
-         */
-        function openImportModal() {
-            const modal = document.getElementById('importModal');
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-            
-            // Focus on textarea after animation
-            setTimeout(() => {
-                document.getElementById('modalImportText').focus();
-            }, 300);
-        }
-
-        /**
-         * Close import modal
-         */
-        function closeImportModal() {
-            const modal = document.getElementById('importModal');
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-            
-            // Clear the textarea
-            document.getElementById('modalImportText').value = '';
-        }
-
-        /**
-         * Import data from modal
-         */
-        function importFromModal() {
-            console.log("Starting modal import...");
-            
-            const importTextArea = document.getElementById('modalImportText');
-            if (!importTextArea) {
-                alert("❌ Error: Import text area not found.");
-                return;
-            }
-            
-            const importText = importTextArea.value.trim();
-            if (!importText) {
-                alert("❌ Please paste the export string in the text area first.");
-                return;
-            }
-            
-            try {
-                // Try to parse as JSON
-                const data = JSON.parse(importText);
-                console.log("Successfully parsed JSON data:", data);
-                
-                // Validate data structure
-                if (!data.entries || !Array.isArray(data.entries)) {
-                    throw new Error("Invalid data format - missing entries array");
-                }
-                
-                // Populate form with imported data
-                populateFormFromData(data);
-                
-                // Close modal and clear textarea
-                closeImportModal();
-                
-            } catch (error) {
-                console.error("Error processing import data:", error);
-                console.error("Import text:", importText);
-                
-                alert("❌ Error: Could not read data from import string. Please check that you've copied the complete export string.\n\nError: " + error.message);
-            }
-        }
-
-
-
-        /**
-         * Main function to update the preview
-         */
-        function updatePreview() {
-            const previewContent = document.getElementById('previewContent');
-            const masterKey = document.getElementById('masterKey').value;
-            const rows = document.querySelectorAll('.input-row');
-            const enhanced = document.getElementById('enhancedToggle').checked;
-            
-            // Clear preview but preserve export QR container
-            const exportQrContainer = document.getElementById('exportQrCodeContainer');
-            const exportQrParent = exportQrContainer ? exportQrContainer.parentNode : null;
-            const exportQrDisplay = exportQrContainer ? exportQrContainer.style.display : 'none';
-            
-            previewContent.innerHTML = '';
-            
-            if (rows.length === 0) {
-                previewContent.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>';
-                // Restore export QR container if it existed
-                if (exportQrContainer && exportQrParent) {
-                    previewContent.appendChild(exportQrContainer);
-                    exportQrContainer.style.display = exportQrDisplay;
-                }
-                return;
-            }
-            
-            // Group entries by category
-            const categorizedEntries = {};
-            let hasErrors = false;
-            
-            rows.forEach(row => {
-                const category = row.querySelector('select').value;
-                const title = row.querySelector('input[type="text"]').value;
-                const value = row.querySelectorAll('input[type="text"]')[1].value;
-                const shouldEncrypt = row.querySelector('input[type="checkbox"]').checked;
-                const shouldGenerateQR = row.querySelectorAll('input[type="checkbox"]')[1].checked;
-                
-                // Skip empty entries
-                if (!title.trim() && !value.trim()) return;
-                
-                // Validate encryption
-                const encryptionError = validateEncryption(shouldEncrypt, masterKey);
-                
-                if (!categorizedEntries[category]) {
-                    categorizedEntries[category] = [];
-                }
-                
-                categorizedEntries[category].push({
-                    title: title || 'Untitled',
-                    value: value || '',
-                    shouldEncrypt,
-                    shouldGenerateQR,
-                    encryptionError
-                });
-                
-                if (encryptionError) hasErrors = true;
-            });
-            
-            // Show errors if any
-            if (hasErrors) {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.textContent = '⚠️ Master encryption key is required when "Encrypt" is checked';
-                previewContent.appendChild(errorDiv);
-            }
-            
-            // Generate HTML for each category
-            Object.keys(categorizedEntries).forEach(category => {
-                const categorySection = document.createElement('div');
-                categorySection.className = 'category-section';
-                
-                const categoryTitle = document.createElement('h3');
-                categoryTitle.textContent = category;
-                categorySection.appendChild(categoryTitle);
-                
-                categorizedEntries[category].forEach((entry, index) => {
-                    const entryDiv = document.createElement('div');
-                    entryDiv.className = 'entry';
-                    
-                    // Entry title
-                    const entryTitle = document.createElement('div');
-                    entryTitle.className = 'entry-title';
-                    entryTitle.textContent = entry.title;
-                    entryDiv.appendChild(entryTitle);
-                    
-                    // Entry value
-                    const entryValue = document.createElement('div');
-                    entryValue.className = 'entry-value';
-                    
-                    let displayValue = entry.value;
-                    let actualValue = entry.value; // For QR code
-                    
-                    // Handle encryption
-                    if (entry.shouldEncrypt && !entry.encryptionError && entry.value) {
-                        const encrypted = encryptText(entry.value, masterKey);
-                        displayValue = encrypted;
-                        actualValue = encrypted;
-                        entryValue.innerHTML = `<span class="encrypted">${displayValue}</span><span class="lock-icon">🔒</span>`;
-                    } else if (entry.value) {
-                        // Apply formatting based on category
-                        if (category === 'User/Password') {
-                            entryValue.innerHTML = applyColorCoding(displayValue, enhanced);
-                        } else if (category === 'PIN Code') {
-                            entryValue.innerHTML = applySequenceBoxes(displayValue);
-                        } else {
-                            if (enhanced) {
-                                entryValue.innerHTML = applyColorCoding(displayValue, enhanced);
-                            } else {
-                                entryValue.innerHTML = `<span class="simple-text">${displayValue}</span>`;
-                            }
-                        }
+                    if (select.value === 'user-pass' && isEnhanced && !isEncrypted) {
+                         outputHTML += formatEnhanced(value);
                     } else {
-                        entryValue.innerHTML = '<em style="color: #999;">No value entered</em>';
+                        outputHTML += `<p style="word-break: break-all;">${displayValue}</p>`;
                     }
-                    
-                    entryDiv.appendChild(entryValue);
-                    
-                    // Generate QR code if requested and no encryption errors
-                    if (entry.shouldGenerateQR && actualValue && !entry.encryptionError) {
-                        generateQRCode(actualValue, `qr-${category}-${index}`)
-                            .then(qrCode => {
-                                entryDiv.appendChild(qrCode);
-                            })
-                            .catch(error => {
-                                console.error('Failed to generate QR code:', error);
-                                const errorDiv = document.createElement('div');
-                                errorDiv.style.color = '#e74c3c';
-                                errorDiv.style.fontStyle = 'italic';
-                                errorDiv.textContent = 'QR code generation failed';
-                                entryDiv.appendChild(errorDiv);
-                            });
+
+                    if (isQR) {
+                        const qrContainerId = `qr-output-${row.id}`;
+                        outputHTML += `<div id="${qrContainerId}" class="qr-code-container"></div>`;
+                        // Defer QR generation slightly to ensure DOM is updated
+                        setTimeout(() => {
+                            const qrEl = document.getElementById(qrContainerId);
+                            if(qrEl) {
+                                qrEl.innerHTML = ""; // Clear previous
+                                new QRCode(qrEl, { text: displayValue, width: 128, height: 128 });
+                            }
+                        }, 0);
                     }
-                    
-                    categorySection.appendChild(entryDiv);
-                });
-                
-                previewContent.appendChild(categorySection);
-            });
-            
-            // Show message if no valid entries
-            if (Object.keys(categorizedEntries).length === 0) {
-                previewContent.innerHTML = '<p style="color: #666; font-style: italic; text-align: center; margin-top: 50px;">Add entries on the left to see your document preview...</p>';
-            }
-            
-            // Restore export QR container if it existed
-            if (exportQrContainer && exportQrParent) {
-                previewContent.appendChild(exportQrContainer);
-                exportQrContainer.style.display = exportQrDisplay;
-            }
-        }
-
-        /**
-         * Generate Export QR Code manually
-         */
-        function generateExportQR() {
-            const rows = document.querySelectorAll('.input-row');
-            
-            if (rows.length === 0) {
-                alert('❌ No data to export. Please add some entries first.');
-                return;
-            }
-            
-            // Check if there's any actual content
-            let hasContent = false;
-            rows.forEach(row => {
-                const title = row.querySelector('input[type="text"]').value;
-                const value = row.querySelectorAll('input[type="text"]')[1].value;
-                if (title.trim() || value.trim()) {
-                    hasContent = true;
+                    outputHTML += '<hr>';
+                    combinedQRData.push({l: label, v: value, e: isEncrypted, t: select.value});
                 }
             });
-            
-            if (!hasContent) {
-                alert('❌ No data to export. Please add some content to your entries.');
-                return;
-            }
-            
-            const qrContainer = document.getElementById('exportQrCodeContainer');
-            qrContainer.style.display = 'block';
-            
-            // Collect all form data
-            const formData = collectAllFormData();
-            const jsonData = JSON.stringify(formData);
-            
-            // Generate QR code
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = ""; // Clear previous QR code
-            
-            try {
-                // Sanitize the JSON data before generating QR code
-                const sanitizedData = sanitizeQRInput(jsonData);
-                
-                if (!sanitizedData || sanitizedData.startsWith('[BLOCKED:')) {
-                    alert('❌ Export QR code blocked due to potentially dangerous content in the data.');
-                    qrContainer.style.display = 'none';
-                    return;
-                }
-                
-                // Always create a new QR code instance to avoid conflicts
-                const newQrCode = new QRCode(qrcodeDiv, {
-                    text: sanitizedData,
-                    width: 256,
-                    height: 256,
-                    correctLevel: QRCode.CorrectLevel.L // Level L for max data capacity
-                });
-                
-                // Store reference for future updates
-                qrcode = newQrCode;
-                
-                console.log('Export QR code generated successfully with data length:', jsonData.length);
-                
-                // Show data info
-                const dataInfo = document.getElementById('qrDataInfo');
-                if (dataInfo) {
-                    dataInfo.textContent = `Data size: ${jsonData.length} characters | Entries: ${formData.entries.length}`;
-                }
-                
 
-                
-                alert('✅ Export QR code generated successfully! Scroll down to see it.');
-                
-                // Scroll to QR code
-                qrContainer.scrollIntoView({ behavior: 'smooth' });
-                
-            } catch (error) {
-                console.error('QR Code generation error:', error);
-                console.error('Data that failed:', jsonData);
-                alert('❌ Error generating QR code. Data might be too large. Try reducing the amount of data or remove some entries.');
-                qrContainer.style.display = 'none';
+            document.getElementById('output').innerHTML = outputHTML;
+            
+            const sanitizedData = sanitizeQRInput(JSON.stringify(combinedQRData));
+            if (sanitizedData.startsWith("data:")) {
+                // If we are importing, we don't regenerate the QR code from it.
+                // We'd need to parse and reconstruct the form. That's for a future feature.
+            } else if (combinedQRData.length > 0) {
+                 const fullEncryptedString = encryptText(sanitizedData, masterKey);
+                 qrcode.clear();
+                 qrcode.makeCode(fullEncryptedString);
+            } else {
+                 qrcode.clear();
             }
         }
 
-        /**
-         * Update print date with Danish format
-         */
-        function updatePrintDate() {
-            const now = new Date();
-            const danishDate = now.toLocaleDateString('da-DK', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-            const danishTime = now.toLocaleTimeString('da-DK', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            const printDateElement = document.getElementById('printDate');
-            if (printDateElement) {
-                printDateElement.textContent = `Oprettet: ${danishDate} kl. ${danishTime}`;
-            }
-        }
-
-        /**
-         * Print the document
-         */
-        function printDocument() {
-            // Update the date/time right before printing
-            updatePrintDate();
-            window.print();
-        }
-
-
+        document.addEventListener('DOMContentLoaded', () => {
+            addRow(); // Start with one row
+            updateEventListeners();
+        });
     </script>
 </body>
 </html> 

@@ -1,0 +1,347 @@
+/*-- Google Fonts Import --*/
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap');
+
+/*-- Root Variables --*/
+:root {
+    --font-heading: 'Lato', sans-serif;
+    --font-body: 'Merriweather', serif;
+    --color-primary: #4A90E2; /* Trustworthy Blue */
+    --color-background: #F8F9FA; /* Soft Gray */
+    --color-text: #333333; /* Dark Gray */
+    --color-text-light: #555555;
+    --color-accent: #50C878; /* Muted Green */
+    --color-warning: #F5A623; /* Warm Orange */
+    --color-white: #FFFFFF;
+    --color-border: #DDDDDD;
+}
+
+/*-- General Styles --*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    line-height: 1.7;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 2.8rem; }
+h2 { font-size: 2.2rem; color: var(--color-primary); }
+h3 { font-size: 1.5rem; }
+p { margin-bottom: 1rem; }
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/*-- Buttons --*/
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+.btn-primary:hover {
+    background-color: #357ABD;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+.btn-secondary:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+
+/*-- Header & Navigation --*/
+.page-header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 40px;
+}
+.page-header h1 {
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+.page-header .subtitle {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+}
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+/*-- Sections --*/
+.section {
+    padding: 40px 0;
+    border-bottom: 1px solid #EAEAEA;
+}
+.section:last-child {
+    border-bottom: none;
+}
+.section-intro {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 40px auto;
+}
+
+/*-- 'How It Works' Section --*/
+.how-it-works-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+.how-it-works-step {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+
+/*-- Decryption Kit Section --*/
+.kit-download-box {
+    background-color: #E7F0FB;
+    border: 2px dashed var(--color-primary);
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+.kit-download-box p {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*-- Advanced Guide Tabs --*/
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+}
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+.tab-button.active {
+    border-bottom: 3px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.tab-content pre {
+    background-color: #2d2d2d;
+    color: #f1f1f1;
+    padding: 20px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/*-- About Section --*/
+.about-box {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    text-align: center;
+}
+.about-box p {
+    font-style: italic;
+    color: var(--color-text-light);
+}
+
+/*-- Footer --*/
+.page-footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+/*-- Specific to Create/Decrypt Pages --*/
+.form-section, .preview-section {
+    padding: 30px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+.input-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr auto auto auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+.input-row select, .input-row input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-family: 'Lato', sans-serif;
+}
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+.remove-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/*-- Encryption Fieldset --*/
+.encryption-fieldset {
+    border: 2px solid var(--color-warning);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.encryption-fieldset legend {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-warning);
+    padding: 0 10px;
+}
+.disclaimer {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-top: 10px;
+}
+
+/*-- Enhanced Password View --*/
+.password-table {
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 1.1rem;
+    border-collapse: collapse;
+    width: 100%;
+}
+.char-cell, .char-number {
+    padding: 4px 8px;
+    text-align: center;
+    border: 1px solid #ccc;
+    min-width: 30px;
+}
+.char-cell.digit {
+    color: #007bff;
+    background-color: #e7f3ff;
+}
+.char-cell.lower {
+    color: #333;
+}
+.char-cell.upper {
+    color: #28a745;
+    background-color: #eaf6ec;
+}
+.char-cell.special {
+    color: #dc3545;
+    background-color: #fbebed;
+}
+
+/*-- Standalone Decrypt Page --*/
+.standalone-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.standalone-container textarea, .standalone-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-body);
+}
+.standalone-result {
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+.standalone-result.success {
+    background-color: #eaf6ec;
+    border: 1px solid var(--color-accent);
+}
+.standalone-result.error {
+    background-color: #fbebed;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+@media (max-width: 768px) {
+    .how-it-works-grid {
+        grid-template-columns: 1fr;
+    }
+    .input-row {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 15px;
+    }
+    .input-row > * {
+        grid-column: 1 / -1;
+    }
+} 

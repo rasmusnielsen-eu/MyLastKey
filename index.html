@@ -3,263 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Last Key - Secure Document Generator</title>
-    
-    <!-- CDN Dependencies with SRI -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" 
-            integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" 
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" 
-            integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" 
-            crossorigin="anonymous"></script>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .header h1 {
-            color: #2c3e50;
-            font-size: 3em;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .header .subtitle {
-            font-size: 1.3em;
-            color: #666;
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .header-nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .nav-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #3498db;
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .nav-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .nav-btn.secondary {
-            background: #95a5a6;
-        }
-
-        .nav-btn.secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .nav-btn.danger {
-            background: #e74c3c;
-        }
-
-        .nav-btn.danger:hover {
-            background: #c0392b;
-        }
-
-        /* Introduction Section */
-        .intro-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .intro-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: start;
-        }
-
-        .intro-content h2 {
-            color: #2c3e50;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .intro-content p {
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            line-height: 1.7;
-        }
-
-        .features-list {
-            list-style: none;
-            margin: 20px 0;
-        }
-
-        .features-list li {
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .features-list li::before {
-            content: "✓";
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .security-info {
-            background: #e8f5e8;
-            border-left: 4px solid #27ae60;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-
-        .security-info h3 {
-            color: #27ae60;
-            margin-bottom: 10px;
-        }
-
-
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .intro-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-nav {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-
-    </style>
+    <title>My Last Key - A Simple Plan for Your Family's Important Information</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <h1>🔐 My Last Key</h1>
-            <p class="subtitle">Generate a secure, physical key document with advanced encryption and QR codes. Create a printable backup of your most important passwords and codes.</p>
-            
-            <div class="header-nav">
-                <button class="nav-btn active">
-                    📖 About & Security
-                </button>
-                <a href="./create.html" class="nav-btn">
-                    🔑 Create Document
-                </a>
-                <a href="./dekrypter.html" class="nav-btn secondary">
-                    🔓 Decrypt Tool
-                </a>
-                <a href="https://github.com/rasmusnielsen-eu/MyLastKey" class="nav-btn secondary" target="_blank">
-                    📁 GitHub
-                </a>
-            </div>
-        </div>
+        <header class="page-header">
+            <h1>My Last Key</h1>
+            <p class="subtitle">A simple, private, and offline-first way to organize and secure your family's essential information for the future.</p>
+            <nav class="main-nav">
+                <a href="create.html" class="btn btn-primary">Create Your Plan</a>
+                <a href="dekrypter.html" class="btn btn-secondary">Decrypt Existing Plan</a>
+            </nav>
+        </header>
 
-        <!-- Introduction Section -->
-        <div class="intro-section">
-            <div class="intro-grid">
-                <div class="intro-content">
-                    <h2>🎯 Purpose & Features</h2>
-                    <p><strong>My Last Key</strong> helps you create a secure, physical document containing all your important passwords, codes, and sensitive information. Perfect for emergency access or as a backup for your digital password manager.</p>
-                    
-                    <ul class="features-list">
-                        <li><strong>AES Encryption:</strong> Military-grade encryption for sensitive data</li>
-                        <li><strong>QR Codes:</strong> Easy scanning for quick access</li>
-                        <li><strong>Visual Formatting:</strong> Enhanced readability with color coding</li>
-                        <li><strong>Print Optimized:</strong> Perfect formatting for physical storage</li>
-                        <li><strong>Client-Side Only:</strong> No data ever leaves your browser</li>
-                        <li><strong>Multiple Categories:</strong> Organize by type (passwords, PINs, etc.)</li>
-                    </ul>
+        <main>
+            <!-- Why Section -->
+            <section class="section">
+                <div class="section-intro">
+                    <h2>Why This Project Exists</h2>
+                    <p>What happens to your digital accounts, documents, and other important information if something happens to you? My Last Key was created to solve this problem. It's not a password manager. It's a simple tool to create a single, secure document for your loved ones—a "digital last will" that gives them access and guidance when they need it most.</p>
+                </div>
+            </section>
 
-                    <div class="security-info">
-                        <h3>🔒 Security Guarantee</h3>
-                        <p><strong>100% Client-Side:</strong> All encryption and processing happens locally in your browser. No data is ever transmitted to any server.</p>
-                        <p><strong>Your Master Key:</strong> Only you know your encryption key. Without it, encrypted data cannot be decrypted by anyone.</p>
-                        <p><strong>Open Source:</strong> Full source code available on GitHub for transparency.</p>
+            <!-- How It Works Section -->
+            <section class="section">
+                <div class="section-intro">
+                    <h2>How It Works: Two Simple Steps</h2>
+                </div>
+                <div class="how-it-works-grid">
+                    <div class="how-it-works-step">
+                        <h3>Step 1: Create Your Document</h3>
+                        <p>Use the "Create Your Plan" tool to list all your important information: account logins, locations of physical documents, instructions for your partner, etc. You can add, edit, and categorize everything you need.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <h3>Step 2: Secure & Share</h3>
+                        <p>Optionally, you can encrypt this entire document with a single, strong Master Key. The tool then lets you export the encrypted text or a QR code. You can save this file on a USB drive or print the QR code and store it in a safe place, along with the Master Key (shared separately).</p>
                     </div>
                 </div>
+            </section>
 
-                <div class="intro-content">
-                    <h2>🚀 How It Works</h2>
-                    <p><strong>Step 1:</strong> Add your passwords, codes, and sensitive information.</p>
-                    <p><strong>Step 2:</strong> Choose which items to encrypt and which to generate QR codes for.</p>
-                    <p><strong>Step 3:</strong> Print your secure document and store it safely.</p>
-
-                    <h3 style="margin-top: 25px; color: #7f8c8d;">📋 Optional Steps</h3>
-                    <p><strong>Optional Step 1:</strong> Enter a strong master encryption key that you'll remember.</p>
-                    <p><strong>Optional Step 2:</strong> Use the decrypt tool when you need to recover encrypted information.</p>
-
-                    <h2 style="margin-top: 30px;">📋 Supported Categories</h2>
-                    <ul class="features-list">
-                        <li><strong>User/Password:</strong> Login credentials with visual formatting</li>
-                        <li><strong>PIN Code:</strong> Numeric codes in easy-to-read boxes</li>
-                        <li><strong>Security Questions:</strong> Backup recovery information</li>
-                        <li><strong>Wi-Fi Codes:</strong> Network passwords and settings</li>
-                        <li><strong>License Keys:</strong> Software and service licenses</li>
-                        <li><strong>Notes/Text:</strong> Any other important information</li>
-                    </ul>
+            <!-- Decryption Kit Section -->
+            <section class="section">
+                <div class="section-intro">
+                    <h2>Your Offline Decryption Kit</h2>
+                    <p><strong>Your data is never locked in.</strong> To guarantee you or your family can always access your information, even if this website is offline, download the self-contained decryption tool. It's a single HTML file that works forever, on any computer with a web browser.</p>
                 </div>
-            </div>
-        </div>
 
+                <div class="kit-download-box">
+                    <h3>Download the Decryption Tool</h3>
+                    <p>Save this file to a USB drive along with your encrypted data file for complete peace of mind.</p>
+                    <br>
+                    <a href="mylastkey-decrypt.html" download class="btn btn-primary">Download mylastkey-decrypt.html</a>
+                </div>
 
+                <div class="section-intro" style="margin-top: 50px;">
+                    <h3>Advanced: Manual Decryption Guide</h3>
+                    <p>For technical users, you can also decrypt your data using standard command-line tools, proving that your information is not dependent on this specific tool. Here's how:</p>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab-button active" onclick="openTab(event, 'windows')">Windows (PowerShell)</button>
+                    <button class="tab-button" onclick="openTab(event, 'mac')">macOS / Linux (Bash)</button>
+                </div>
+
+                <div id="windows" class="tab-content active">
+                    <h4>Decrypting on Windows</h4>
+                    <p>1. Save your encrypted text (the `salt:iv:data` string) into a file named `encrypted.txt`.</p>
+                    <p>2. Open PowerShell and navigate to the directory where you saved the file.</p>
+                    <p>3. Run the following commands, replacing `"YOUR_MASTER_KEY_HERE"` with your actual key.</p>
+                    <pre>
+# 1. Read the encrypted file and split it into parts
+$encryptedParts = (Get-Content -Path "encrypted.txt" -Raw).Split(':')
+$saltHex = $encryptedParts[0]
+$ivHex = $encryptedParts[1]
+$encryptedDataB64 = [System.Convert]::ToBase64String([System.Convert]::FromHexString($encryptedParts[2]))
+
+# 2. Get the Master Key from the user
+$password = Read-Host "Enter your Master Key"
+
+# 3. Derive the encryption key using PBKDF2
+$rfc2898 = New-Object System.Security.Cryptography.Rfc2898DeriveBytes($password, [System.Convert]::FromHexString($saltHex), 250000, "HMACSHA256")
+$key = $rfc2898.GetBytes(32) # 32 bytes for AES-256
+
+# 4. Decrypt the data
+$aes = New-Object System.Security.Cryptography.AesManaged
+$aes.Mode = "CBC"
+$aes.Padding = "PKCS7"
+$aes.Key = $key
+$aes.IV = [System.Convert]::FromHexString($ivHex)
+
+$decryptor = $aes.CreateDecryptor()
+$encryptedBytes = [System.Convert]::FromBase64String($encryptedDataB64)
+$decryptedBytes = $decryptor.TransformFinalBlock($encryptedBytes, 0, $encryptedBytes.Length)
+$aes.Dispose()
+
+# 5. Display the result
+[System.Text.Encoding]::UTF8.GetString($decryptedBytes)
+                    </pre>
+                </div>
+
+                <div id="mac" class="tab-content">
+                    <h4>Decrypting on macOS / Linux</h4>
+                    <p>1. Save your encrypted text (the `salt:iv:data` string) into a file named `encrypted.txt`.</p>
+                    <p>2. Open your terminal and navigate to the directory where you saved the file.</p>
+                    <p>3. Run the following shell command. It will prompt you for your Master Key.</p>
+                    <pre>
+#!/bin/bash
+# Read the encrypted string from file
+ENCRYPTED_STRING=$(cat encrypted.txt)
+
+# Split the string into salt, iv, and data
+IFS=':' read -r SALT_HEX IV_HEX DATA_HEX <<< "$ENCRYPTED_STRING"
+
+# Ask for the master key securely
+echo -n "Enter your Master Key: "
+read -s MASTER_KEY
+echo
+
+# Derive the key using OpenSSL's PBKDF2 implementation
+# Note: -pbkdf2 and -iter are standard in modern OpenSSL
+KEY_HEX=$(echo -n "$MASTER_KEY" | openssl kdf -kdf_alg PBKDF2 -iter 250000 -keylen 32 -prf hmacWithSHA256 -salt "$SALT_HEX" PBKDF2)
+
+# Decrypt the data using AES-256-CBC
+# The encrypted data needs to be in binary format, so we use xxd to convert from hex
+echo "$DATA_HEX" | xxd -r -p | openssl enc -d -aes-256-cbc -K "$KEY_HEX" -iv "$IV_HEX" -padding pkcs7
+                    </pre>
+                </div>
+
+            </section>
+            
+            <!-- About Section -->
+            <section class="section">
+                <div class="about-box">
+                    <h3>About the Creator</h3>
+                    <p>"This started as a personal project to ensure my own family would be looked after. I wanted a solution that was simple, trustworthy, and not reliant on a company that could disappear tomorrow. I'm sharing it in the hope it can help others too." - Rasmus</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="page-footer">
+            <p>&copy; 2024 Rasmus Nielsen. All rights reserved.</p>
+        </footer>
     </div>
 
     <script>
-        // Simple script for the introduction page
-        console.log('My Last Key - Introduction page loaded');
+        // JavaScript for tab functionality
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
     </script>
+
 </body>
 </html>
