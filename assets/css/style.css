@@ -6,7 +6,7 @@
     --font-heading: 'Lato', sans-serif;
     --font-body: 'Merriweather', serif;
     --color-primary: #4A90E2; /* Trustworthy Blue */
-    --color-background: #F8F9FA; /* Soft Gray */
+    --color-background: #FFFFFF; /* Clean White */
     --color-text: #333333; /* Dark Gray */
     --color-text-light: #555555;
     --color-accent: #50C878; /* Muted Green */
@@ -330,6 +330,41 @@ a:hover { text-decoration: underline; }
     background-color: #fbebed;
     border: 1px solid #dc3545;
     color: #dc3545;
+}
+
+.form-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/*-- Print Styles --*/
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #output, #output * {
+        visibility: visible;
+    }
+    #output {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    .btn, .form-section, .page-header, .page-footer, #qrcode, hr {
+        display: none !important;
+    }
 }
 
 @media (max-width: 768px) {

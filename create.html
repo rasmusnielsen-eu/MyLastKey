@@ -1307,6 +1307,17 @@
                     </p>
                 </fieldset>
                 
+                <div class="form-controls">
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="globalEnhancedView" checked>
+                        <label for="globalEnhancedView">Enable Enhanced Password View</label>
+                    </div>
+                    <div>
+                        <button onclick="showImportModal()" class="btn btn-secondary">Import Data</button>
+                        <button onclick="printDocument()" class="btn btn-primary">Print Document</button>
+                    </div>
+                </div>
+
                 <div id="input-container" style="margin-top: 20px;">
                     <!-- Dynamic inputs will be added here -->
                 </div>
@@ -1334,46 +1345,30 @@
             correctLevel: QRCode.CorrectLevel.H
         });
 
-        function addRow(type = 'user-pass') {
+        function addRow(type = 'user-pass', label = '', value = '', isEncrypted = false, isQR = false) {
             rowCounter++;
             const container = document.getElementById('input-container');
             const div = document.createElement('div');
             div.className = 'input-row';
             div.id = `row-${rowCounter}`;
             div.innerHTML = `
-                <select onchange="updateRowType(this, ${rowCounter})">
+                <select onchange="processInputs()">
                     <option value="user-pass" ${type === 'user-pass' ? 'selected' : ''}>User/Password</option>
                     <option value="pin" ${type === 'pin' ? 'selected' : ''}>PIN Code</option>
                     <option value="text" ${type === 'text' ? 'selected' : ''}>Note/Text</option>
                 </select>
-                <input type="text" placeholder="Label/Title">
-                <input type="text" placeholder="Value">
+                <input type="text" placeholder="Label/Title" value="${label}">
+                <input type="text" placeholder="Value" value="${value}">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="encrypt-check-${rowCounter}"> <label for="encrypt-check-${rowCounter}">Encrypt</label>
+                    <input type="checkbox" id="encrypt-check-${rowCounter}" ${isEncrypted ? 'checked' : ''}> <label for="encrypt-check-${rowCounter}">Encrypt</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="qr-check-${rowCounter}"> <label for="qr-check-${rowCounter}">QR Code</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="enhanced-check-${rowCounter}" ${type === 'user-pass' ? 'checked' : ''}> <label for="enhanced-check-${rowCounter}">Enhanced View</label>
+                    <input type="checkbox" id="qr-check-${rowCounter}" ${isQR ? 'checked' : ''}> <label for="qr-check-${rowCounter}">QR Code</label>
                 </div>
                 <button class="remove-btn" onclick="removeRow(${rowCounter})">×</button>
             `;
             container.appendChild(div);
             updateEventListeners();
-        }
-
-        function updateRowType(selectElement, rowId) {
-            const row = document.getElementById(`row-${rowId}`);
-            const enhancedCheckbox = row.querySelector(`#enhanced-check-${rowId}`);
-            if (selectElement.value === 'user-pass') {
-                enhancedCheckbox.checked = true;
-                enhancedCheckbox.disabled = false;
-            } else {
-                enhancedCheckbox.checked = false;
-                enhancedCheckbox.disabled = true;
-            }
-            processInputs();
         }
         
         function removeRow(id) {
@@ -1382,17 +1377,17 @@
         }
 
         function updateEventListeners() {
-            const inputs = document.querySelectorAll('#input-container input, #input-container select, #masterKey');
+            const inputs = document.querySelectorAll('#input-container input, #input-container select, #masterKey, #globalEnhancedView');
             inputs.forEach(input => {
+                input.removeEventListener('input', processInputs); // Prevent duplicates
+                input.removeEventListener('change', processInputs);
                 input.addEventListener('input', processInputs);
                 input.addEventListener('change', processInputs);
             });
         }
         
         function sanitizeQRInput(str) {
-             // Allow data: URLs for export/import, but block malicious schemes
             if (str.startsWith("data:")) return str;
-            // Basic sanitization to prevent generating QR codes with malicious JS payloads
             return str.replace(/<|>/g, "");
         }
 
@@ -1401,17 +1396,22 @@
             try {
                 const salt = CryptoJS.lib.WordArray.random(128 / 8);
                 const iv = CryptoJS.lib.WordArray.random(128 / 8);
-                const key = CryptoJS.PBKDF2(masterKey, salt, {
-                    keySize: 256 / 32,
-                    iterations: 250000,
-                    hasher: CryptoJS.algo.SHA256
-                });
+                const key = CryptoJS.PBKDF2(masterKey, salt, { keySize: 256 / 32, iterations: 250000, hasher: CryptoJS.algo.SHA256 });
                 const encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
                 return `${salt.toString()}:${iv.toString()}:${encrypted.toString()}`;
-            } catch (e) {
-                console.error("Encryption failed:", e);
-                return "Encryption Error!";
-            }
+            } catch (e) { return "Encryption Error!"; }
+        }
+
+        function decryptText(encryptedStr, masterKey) {
+            if (!masterKey) throw new Error("A Master Key is required for decryption.");
+            const parts = encryptedStr.split(':');
+            if (parts.length !== 3) throw new Error("Invalid encrypted format.");
+            const salt = CryptoJS.enc.Hex.parse(parts[0]);
+            const iv = CryptoJS.enc.Hex.parse(parts[1]);
+            const encrypted = parts[2];
+            const key = CryptoJS.PBKDF2(masterKey, salt, { keySize: 256 / 32, iterations: 250000, hasher: CryptoJS.algo.SHA256 });
+            const decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+            return decrypted.toString(CryptoJS.enc.Utf8);
         }
 
         function formatEnhanced(value) {
@@ -1432,10 +1432,18 @@
             return table;
         }
 
+        function getPrintHeader() {
+            const now = new Date();
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            const dateTime = now.toLocaleDateString('da-DK', options);
+            return `<h1>My Last Key</h1><p>Udskrevet den: ${dateTime}</p><hr>`;
+        }
+        
         function processInputs() {
             const rows = document.querySelectorAll('.input-row');
             const masterKey = document.getElementById('masterKey').value;
-            let outputHTML = '';
+            const globalEnhancedView = document.getElementById('globalEnhancedView').checked;
+            let outputHTML = getPrintHeader();
             let combinedQRData = [];
 
             rows.forEach(row => {
@@ -1445,14 +1453,12 @@
                 let value = inputs[1].value;
                 const isEncrypted = row.querySelector('input[type="checkbox"][id^="encrypt-check"]').checked;
                 const isQR = row.querySelector('input[type="checkbox"][id^="qr-check"]').checked;
-                const isEnhanced = row.querySelector('input[type="checkbox"][id^="enhanced-check"]').checked;
 
                 if (label || value) {
                     const displayValue = isEncrypted ? encryptText(value, masterKey) : value;
-
                     outputHTML += `<h3>${label}</h3>`;
                     
-                    if (select.value === 'user-pass' && isEnhanced && !isEncrypted) {
+                    if (select.value === 'user-pass' && globalEnhancedView && !isEncrypted) {
                          outputHTML += formatEnhanced(value);
                     } else {
                         outputHTML += `<p style="word-break: break-all;">${displayValue}</p>`;
@@ -1460,28 +1466,24 @@
 
                     if (isQR) {
                         const qrContainerId = `qr-output-${row.id}`;
-                        outputHTML += `<div id="${qrContainerId}" class="qr-code-container"></div>`;
-                        // Defer QR generation slightly to ensure DOM is updated
+                        outputHTML += `<div id="${qrContainerId}" class="qr-code-container" style="padding-top: 10px;"></div>`;
                         setTimeout(() => {
                             const qrEl = document.getElementById(qrContainerId);
                             if(qrEl) {
-                                qrEl.innerHTML = ""; // Clear previous
+                                qrEl.innerHTML = "";
                                 new QRCode(qrEl, { text: displayValue, width: 128, height: 128 });
                             }
                         }, 0);
                     }
                     outputHTML += '<hr>';
-                    combinedQRData.push({l: label, v: value, e: isEncrypted, t: select.value});
+                    combinedQRData.push({l: label, v: value, e: isEncrypted, t: select.value, q: isQR});
                 }
             });
 
             document.getElementById('output').innerHTML = outputHTML;
             
             const sanitizedData = sanitizeQRInput(JSON.stringify(combinedQRData));
-            if (sanitizedData.startsWith("data:")) {
-                // If we are importing, we don't regenerate the QR code from it.
-                // We'd need to parse and reconstruct the form. That's for a future feature.
-            } else if (combinedQRData.length > 0) {
+            if (combinedQRData.length > 0) {
                  const fullEncryptedString = encryptText(sanitizedData, masterKey);
                  qrcode.clear();
                  qrcode.makeCode(fullEncryptedString);
@@ -1489,10 +1491,53 @@
                  qrcode.clear();
             }
         }
+        
+        function printDocument() {
+            window.print();
+        }
+
+        function showImportModal() {
+            const data = prompt("Paste your backed-up data string here to import it.");
+            if (data) {
+                importData(data);
+            }
+        }
+        
+        function importData(data) {
+            try {
+                let decryptedData = data;
+                const masterKey = document.getElementById('masterKey').value;
+                
+                if (data.includes(':') && data.split(':').length === 3) {
+                     if (!masterKey) {
+                        alert("This data seems to be encrypted. Please enter the Master Key before importing.");
+                        return;
+                    }
+                    decryptedData = decryptText(data, masterKey);
+                }
+
+                const jsonData = JSON.parse(decryptedData);
+                
+                // Clear existing rows
+                const container = document.getElementById('input-container');
+                container.innerHTML = '';
+                rowCounter = 0;
+                
+                // Add new rows from data
+                jsonData.forEach(item => {
+                    addRow(item.t, item.l, item.v, item.e, item.q);
+                });
+                
+                processInputs(); // Refresh the preview
+            } catch (e) {
+                alert("Import failed. The data may be corrupted or the Master Key is incorrect. Error: " + e.message);
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             addRow(); // Start with one row
             updateEventListeners();
+            processInputs(); // Initial render of the print header
         });
     </script>
 </body>
