@@ -1308,10 +1308,6 @@
                 </fieldset>
                 
                 <div class="form-controls">
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="globalEnhancedView" checked>
-                        <label for="globalEnhancedView">Enable Enhanced Password View</label>
-                    </div>
                     <div class="action-buttons">
                         <button onclick="showImportModal()" class="btn btn-secondary">Import Data</button>
                         <button onclick="printDocument()" class="btn btn-primary">Print Document</button>
@@ -1391,7 +1387,7 @@
         }
 
         function updateEventListeners() {
-            const inputs = document.querySelectorAll('#input-container input, #input-container select, #masterKey, #globalEnhancedView');
+            const inputs = document.querySelectorAll('#input-container input, #input-container select, #masterKey');
             inputs.forEach(input => {
                 input.removeEventListener('input', processInputs); // Prevent duplicates
                 input.removeEventListener('change', processInputs);
@@ -1456,7 +1452,6 @@
         function processInputs() {
             const rows = document.querySelectorAll('.input-row');
             const masterKey = document.getElementById('masterKey').value;
-            const globalEnhancedView = document.getElementById('globalEnhancedView').checked;
             let outputHTML = getPrintHeader();
             let combinedQRData = [];
 
@@ -1472,7 +1467,7 @@
                     const displayValue = isEncrypted ? encryptText(value, masterKey) : value;
                     outputHTML += `<h3>${label}</h3>`;
                     
-                    if (select.value === 'user-pass' && globalEnhancedView && !isEncrypted) {
+                    if (select.value === 'user-pass' && !isEncrypted) {
                          outputHTML += formatEnhanced(value);
                     } else {
                         outputHTML += `<p style="word-break: break-all;">${displayValue}</p>`;
