@@ -25,7 +25,7 @@
 body {
     font-family: var(--font-body);
     line-height: 1.7;
-    background-color: var(--color-background);
+    background: var(--color-background); /* Use background to override gradients */
     color: var(--color-text);
 }
 
@@ -340,6 +340,8 @@ a:hover { text-decoration: underline; }
     background-color: #f8f9fa;
     border-radius: 8px;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Add for responsiveness */
+    gap: 15px;
 }
 
 .toggle-switch {
@@ -348,22 +350,83 @@ a:hover { text-decoration: underline; }
     gap: 10px;
 }
 
+/*-- Modal Styles --*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+.modal-content {
+    background: var(--color-white);
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+.modal-content textarea {
+    width: 100%;
+    min-height: 150px;
+    margin-bottom: 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'Menlo', 'Consolas', monospace;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
 /*-- Print Styles --*/
 @media print {
     body * {
         visibility: hidden;
     }
-    #output, #output * {
+    .preview-section, .preview-section * {
         visibility: visible;
     }
-    #output {
+    .preview-section {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
     }
-    .btn, .form-section, .page-header, .page-footer, #qrcode, hr {
+    .page-header, .form-section, .page-footer, .modal-overlay {
         display: none !important;
+    }
+    #output {
+        border: none;
     }
 }
 

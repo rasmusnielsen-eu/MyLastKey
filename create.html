@@ -1337,6 +1337,20 @@
         </main>
     </div>
 
+    <!-- Import Modal -->
+    <div id="importModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="hideImportModal()">&times;</button>
+            <h2>Import Data</h2>
+            <p>Paste your backed-up data string below. If the data is encrypted, make sure you have entered the Master Key on the main page first.</p>
+            <textarea id="importDataText" placeholder="Paste your data string here..."></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="hideImportModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="importDataFromModal()">Import</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let rowCounter = 0;
         const qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -1497,10 +1511,19 @@
         }
 
         function showImportModal() {
-            const data = prompt("Paste your backed-up data string here to import it.");
+            document.getElementById('importModal').classList.add('visible');
+        }
+
+        function hideImportModal() {
+            document.getElementById('importModal').classList.remove('visible');
+        }
+
+        function importDataFromModal() {
+            const data = document.getElementById('importDataText').value;
             if (data) {
                 importData(data);
             }
+            hideImportModal();
         }
         
         function importData(data) {
