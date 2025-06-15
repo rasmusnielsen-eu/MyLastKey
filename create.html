@@ -789,6 +789,14 @@
             gap: 15px;
         }
 
+        /* Import Export Button Container */
+        .import-export-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -1169,10 +1177,10 @@
             <div class="control-box">
                 <div class="import-export-group">
                     <div class="import-export-buttons">
-                        <button id="openImportModal" class="import-btn-small" onclick="openImportModal()" style="width: 100%; margin-bottom: 10px;">
+                        <button id="openImportModal" class="import-btn-small" onclick="openImportModal()">
                             📥 Import Data
                         </button>
-                        <button id="generateExportQrButton" class="export-btn-small" onclick="generateExportQR()" style="width: 100%;">
+                        <button id="generateExportQrButton" class="export-btn-small" onclick="generateExportQR()">
                             📤 Generate Export QR
                         </button>
                     </div>
