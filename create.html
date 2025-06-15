@@ -1022,14 +1022,13 @@
             <div class="form-section">
                 <h2>📝 Add Information</h2>
                 
-                <!-- QR Reminder (hidden by default) -->
-                <div id="qrReminder" style="display: none; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #856404;">
+                <!-- QR Reminder (always visible) -->
+                <div id="qrReminder" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #856404;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 1.2em;">💡</span>
                         <div>
                             <strong>Reminder:</strong> When you're done adding entries, remember to click <strong>"Generate Export QR"</strong> to create a QR code. You can then copy the export string from the QR code for future import!
                         </div>
-                        <button onclick="hideQrReminder()" style="background: none; border: none; font-size: 1.2em; cursor: pointer; color: #856404; margin-left: auto;">✕</button>
                     </div>
                 </div>
                 
@@ -1063,7 +1062,6 @@
         // Global variables
         let rowCounter = 0;
         let qrcode = null;
-        let qrReminderShown = false;
 
         // Category options
         const categories = [
@@ -1093,8 +1091,7 @@
             const rowsContainer = document.getElementById('inputRows');
             const rowId = `row-${rowCounter++}`;
             
-            // Hide QR reminder when adding new rows (user is still working)
-            hideQrReminder();
+
             
             const rowDiv = document.createElement('div');
             rowDiv.className = 'input-row';
@@ -1116,7 +1113,6 @@
             titleInput.placeholder = "e.g. 'Google Account' or 'Home Wi-Fi'";
             titleInput.addEventListener('input', () => {
                 updatePreview();
-                checkShowQrReminder();
             });
             
             // Create value input
@@ -1125,7 +1121,6 @@
             valueInput.placeholder = 'The actual code or information';
             valueInput.addEventListener('input', () => {
                 updatePreview();
-                checkShowQrReminder();
             });
             
             // Create encrypt checkbox
@@ -1672,8 +1667,7 @@
                     dataInfo.textContent = `Data size: ${jsonData.length} characters | Entries: ${formData.entries.length}`;
                 }
                 
-                // Hide QR reminder since user has generated the QR code
-                hideQrReminder();
+
                 
                 alert('✅ Export QR code generated successfully! Scroll down to see it.');
                 
@@ -1695,50 +1689,7 @@
             window.print();
         }
 
-        /**
-         * Check if QR reminder should be shown
-         */
-        function checkShowQrReminder() {
-            if (qrReminderShown) return; // Already shown
-            
-            const rows = document.querySelectorAll('.input-row');
-            let hasContent = false;
-            
-            // Check if there's any actual content
-            rows.forEach(row => {
-                const title = row.querySelector('input[type="text"]').value;
-                const value = row.querySelectorAll('input[type="text"]')[1].value;
-                if (title.trim() || value.trim()) {
-                    hasContent = true;
-                }
-            });
-            
-            // Show reminder if there's content and user hasn't seen it yet
-            if (hasContent && rows.length >= 2) { // Show after they have at least 2 rows with content
-                showQrReminder();
-            }
-        }
 
-        /**
-         * Show QR reminder
-         */
-        function showQrReminder() {
-            const reminder = document.getElementById('qrReminder');
-            if (reminder && !qrReminderShown) {
-                reminder.style.display = 'block';
-                qrReminderShown = true;
-            }
-        }
-
-        /**
-         * Hide QR reminder
-         */
-        function hideQrReminder() {
-            const reminder = document.getElementById('qrReminder');
-            if (reminder) {
-                reminder.style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html> 
