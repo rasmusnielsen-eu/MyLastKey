@@ -138,6 +138,36 @@ a:hover { text-decoration: underline; }
     border: 1px solid var(--color-border);
 }
 
+/*-- Feature Boxes Section --*/
+.feature-boxes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    align-items: start;
+}
+.feature-box {
+    background-color: var(--color-white);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.feature-box h3 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+.feature-box h4 {
+    color: var(--color-text);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
 /*-- Decryption Kit Section --*/
 .kit-download-box {
     background-color: #E7F0FB;
@@ -446,6 +476,10 @@ a:hover { text-decoration: underline; }
 @media (max-width: 768px) {
     .how-it-works-grid {
         grid-template-columns: 1fr;
+    }
+    .feature-boxes-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
     .input-row {
         grid-template-columns: 1fr;

@@ -627,6 +627,55 @@
             border: 1px solid rgba(231, 76, 60, 0.2);
         }
 
+        /* Print Customization Styles */
+        .print-customization-fieldset {
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .print-customization-fieldset legend {
+            color: #3498db;
+            font-weight: 700;
+            font-size: 1.1em;
+            padding: 0 10px;
+        }
+
+        .print-settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+
+        .setting-group select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .setting-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
         .lock-icon {
             margin-left: 8px;
             font-size: 1.1em;
@@ -816,7 +865,7 @@
             backdrop-filter: blur(3px);
         }
 
-        .modal-overlay.show {
+        .modal-overlay.visible {
             display: flex;
         }
 
@@ -1281,6 +1330,58 @@
             .toggle-group {
                 justify-content: center;
             }
+
+            /* Mobile responsive fixes for password tables */
+            .password-table {
+                font-size: 0.7em;
+                max-width: 100%;
+                overflow-x: auto;
+                display: block;
+                white-space: nowrap;
+            }
+
+            .password-table tr {
+                display: table-row;
+            }
+
+            .char-cell, .char-number {
+                min-width: 25px;
+                padding: 4px 2px;
+                font-size: 0.8em;
+            }
+
+            /* Preview section mobile improvements */
+            .preview-section {
+                padding: 15px;
+                margin: 10px 0;
+            }
+
+            .preview-section h2 {
+                font-size: 1.3em;
+            }
+
+            #output {
+                padding: 15px;
+                font-size: 0.9em;
+                overflow-x: auto;
+            }
+
+            /* Print customization mobile layout */
+            .print-settings-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .print-customization-fieldset {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            /* QR code mobile sizing */
+            #qrcode canvas {
+                max-width: 200px;
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -1307,6 +1408,43 @@
                     </p>
                 </fieldset>
                 
+                <!-- Print Customization Section -->
+                <fieldset class="print-customization-fieldset">
+                    <legend>Print Customization</legend>
+                    <div class="print-settings-grid">
+                        <div class="setting-group">
+                            <label for="fontFamily">Font Family:</label>
+                            <select id="fontFamily" onchange="updatePrintPreview()">
+                                <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (Default)</option>
+                                <option value="Arial, sans-serif">Arial</option>
+                                <option value="'Times New Roman', serif">Times New Roman</option>
+                                <option value="'Courier New', monospace">Courier New</option>
+                                <option value="Georgia, serif">Georgia</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="fontSize">Font Size:</label>
+                            <select id="fontSize" onchange="updatePrintPreview()">
+                                <option value="10pt">Small (10pt)</option>
+                                <option value="12pt" selected>Medium (12pt)</option>
+                                <option value="14pt">Large (14pt)</option>
+                                <option value="16pt">Extra Large (16pt)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="colorMode">Print Mode:</label>
+                            <div class="toggle-group">
+                                <span class="toggle-label">B&W</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="colorMode" onchange="updatePrintPreview()" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-label">Color</span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
                 <div class="form-controls">
                     <div class="action-buttons">
                         <button onclick="showImportModal()" class="btn btn-secondary">Import Data</button>
@@ -1445,8 +1583,91 @@
         function getPrintHeader() {
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-            const dateTime = now.toLocaleDateString('da-DK', options);
-            return `<h1>My Last Key</h1><p>Udskrevet den: ${dateTime}</p><hr>`;
+            const dateTime = now.toLocaleDateString('en-US', options);
+            return `<h1>My Last Key</h1><p>Printed on: ${dateTime}</p><hr>`;
+        }
+
+        function updatePrintPreview() {
+            const fontFamily = document.getElementById('fontFamily').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const colorMode = document.getElementById('colorMode').checked;
+            
+            // Apply styles to preview
+            const output = document.getElementById('output');
+            output.style.fontFamily = fontFamily;
+            output.style.fontSize = fontSize;
+            
+            // Update print styles dynamically
+            updatePrintStyles(fontFamily, fontSize, colorMode);
+            
+            // Refresh the preview content
+            processInputs();
+        }
+
+        function updatePrintStyles(fontFamily, fontSize, colorMode) {
+            // Remove existing dynamic print styles
+            const existingStyle = document.getElementById('dynamic-print-styles');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            // Create new dynamic print styles
+            const style = document.createElement('style');
+            style.id = 'dynamic-print-styles';
+            
+            let printCSS = `
+                @media print {
+                    body {
+                        font-family: ${fontFamily} !important;
+                        font-size: ${fontSize} !important;
+                    }
+                    
+                    .print-title {
+                        font-family: ${fontFamily} !important;
+                    }
+                    
+                    .category-section h3 {
+                        font-family: ${fontFamily} !important;
+                    }
+                    
+                    .entry-title {
+                        font-family: ${fontFamily} !important;
+                    }
+                    
+                    .entry-value {
+                        font-family: ${fontFamily} !important;
+                    }
+            `;
+            
+            if (!colorMode) {
+                // Black and white mode
+                printCSS += `
+                    .char-cell.digit { 
+                        color: #000000 !important; 
+                        background: #ffffff !important;
+                        border-color: #000000 !important;
+                    }
+                    .char-cell.lower { 
+                        color: #000000 !important; 
+                        background: #ffffff !important;
+                        border-color: #000000 !important;
+                    }
+                    .char-cell.upper { 
+                        color: #000000 !important; 
+                        background: #ffffff !important;
+                        border-color: #000000 !important;
+                    }
+                    .char-cell.special { 
+                        color: #000000 !important; 
+                        background: #ffffff !important;
+                        border-color: #000000 !important;
+                    }
+                `;
+            }
+            
+            printCSS += `}`;
+            style.textContent = printCSS;
+            document.head.appendChild(style);
         }
         
         function processInputs() {
@@ -1555,6 +1776,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             addRow(); // Start with one row
             updateEventListeners();
+            updatePrintPreview(); // Initialize print preview with default settings
             processInputs(); // Initial render of the print header
         });
     </script>
