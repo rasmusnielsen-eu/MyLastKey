@@ -579,7 +579,7 @@
         }
 
         .row-spacer {
-            height: 15px;
+            height: 8px;
             border: none !important;
             background: transparent !important;
         }
@@ -1131,7 +1131,7 @@
         /* Print Styles */
         @media print {
             @page {
-                margin: 2cm; /* Standard European margins */
+                margin: 1cm; /* Reduced margins for more content space */
                 size: A4;
             }
 
@@ -1139,7 +1139,7 @@
                 background: white;
                 color: black;
                 font-size: 12pt;
-                line-height: 1.4;
+                line-height: 1.2;
             }
 
             .header, .top-controls, .form-section {
@@ -1190,7 +1190,7 @@
 
             /* Content styling for print */
             .category-section {
-                margin-bottom: 25px;
+                margin-bottom: 15px;
                 page-break-inside: avoid;
             }
 
@@ -1198,16 +1198,16 @@
                 color: #2c3e50 !important;
                 font-size: 14pt;
                 font-weight: 600;
-                margin-bottom: 15px;
-                padding-bottom: 5px;
+                margin-bottom: 8px;
+                padding-bottom: 3px;
                 border-bottom: 1px solid #ddd;
             }
 
             .entry {
                 border: 1px solid #ddd !important;
                 background: white !important;
-                margin-bottom: 15px;
-                padding: 15px;
+                margin-bottom: 10px;
+                padding: 10px;
                 border-radius: 5px;
                 page-break-inside: avoid;
             }
@@ -1260,7 +1260,7 @@
                 margin: 15px 0 !important;
             }
             .row-spacer {
-                height: 10px !important;
+                height: 5px !important;
             }
 
             .sequence-box {
@@ -1670,7 +1670,7 @@
         }
 
         function formatEnhanced(value) {
-            const maxCharsPerRow = 20; // Maximum characters per row for better printing
+            const maxCharsPerRow = 25; // Maximum characters per row for better printing
             let table = '<table class="password-table">';
             
             // Split password into chunks of maxCharsPerRow
@@ -1698,7 +1698,7 @@
                 
                 // Add spacing between rows if there are more rows
                 if (rowStart + maxCharsPerRow < value.length) {
-                    table += '<tr><td colspan="' + maxCharsPerRow + '" class="row-spacer"></td></tr>';
+                    table += '<tr><td colspan="' + rowChars.length + '" class="row-spacer"></td></tr>';
                 }
             }
             
