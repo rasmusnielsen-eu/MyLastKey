@@ -532,12 +532,12 @@
 
         .char-number {
             display: table-cell;
-            width: 30px;
+            width: 45px;
             text-align: center;
             background: #f8f9fa;
             border: 1px solid #dee2e6;
-            padding: 8px 4px;
-            font-size: 0.8em;
+            padding: 10px 6px;
+            font-size: 1.0em;
             color: #6c757d;
             font-weight: bold;
             vertical-align: middle;
@@ -547,10 +547,10 @@
             display: table-cell;
             text-align: center;
             border: 2px solid #dee2e6;
-            padding: 12px 8px;
+            padding: 15px 10px;
             font-weight: bold;
-            font-size: 1.2em;
-            min-width: 40px;
+            font-size: 1.4em;
+            min-width: 45px;
             vertical-align: middle;
         }
 
@@ -576,6 +576,12 @@
             background: #ffebee;
             border-color: #f44336;
             color: #d32f2f;
+        }
+
+        .row-spacer {
+            height: 15px;
+            border: none !important;
+            background: transparent !important;
         }
 
         /* Simple text mode */
@@ -1219,6 +1225,16 @@
             }
 
             /* Enhanced color coding for print */
+            .char-cell { 
+                font-size: 14pt !important;
+                padding: 12px 8px !important;
+                min-width: 35px !important;
+            }
+            .char-number { 
+                font-size: 10pt !important;
+                padding: 8px 4px !important;
+                width: 35px !important;
+            }
             .char-cell.digit { 
                 color: #0066cc !important; 
                 background: #f0f8ff !important;
@@ -1238,6 +1254,13 @@
                 color: #cc0000 !important; 
                 background: #fff0f0 !important;
                 border-color: #cc0000 !important;
+            }
+            .password-table {
+                page-break-inside: avoid !important;
+                margin: 15px 0 !important;
+            }
+            .row-spacer {
+                height: 10px !important;
             }
 
             .sequence-box {
@@ -1333,11 +1356,10 @@
 
             /* Mobile responsive fixes for password tables */
             .password-table {
-                font-size: 0.7em;
+                font-size: 0.8em;
                 max-width: 100%;
-                overflow-x: auto;
-                display: block;
-                white-space: nowrap;
+                display: table;
+                width: 100%;
             }
 
             .password-table tr {
@@ -1345,9 +1367,9 @@
             }
 
             .char-cell, .char-number {
-                min-width: 25px;
-                padding: 4px 2px;
-                font-size: 0.8em;
+                min-width: 30px;
+                padding: 8px 4px;
+                font-size: 0.9em;
             }
 
             /* Preview section mobile improvements */
@@ -1493,10 +1515,10 @@
                         <div class="setting-group">
                             <label for="fontSize">Font Size:</label>
                             <select id="fontSize" onchange="updatePrintPreview()">
-                                <option value="10pt">Small (10pt)</option>
-                                <option value="12pt" selected>Medium (12pt)</option>
-                                <option value="14pt">Large (14pt)</option>
-                                <option value="16pt">Extra Large (16pt)</option>
+                                <option value="12pt">Small (12pt)</option>
+                                <option value="14pt" selected>Medium (14pt)</option>
+                                <option value="16pt">Large (16pt)</option>
+                                <option value="18pt">Extra Large (18pt)</option>
                             </select>
                         </div>
                         <div class="setting-group">
@@ -1648,20 +1670,39 @@
         }
 
         function formatEnhanced(value) {
-            let table = '<table class="password-table"><tr>';
-            for (let char of value) {
-                let className = 'char-cell ';
-                if (/\d/.test(char)) className += 'digit';
-                else if (/[a-z]/.test(char)) className += 'lower';
-                else if (/[A-Z]/.test(char)) className += 'upper';
-                else className += 'special';
-                table += `<td class="${className}">${char}</td>`;
+            const maxCharsPerRow = 20; // Maximum characters per row for better printing
+            let table = '<table class="password-table">';
+            
+            // Split password into chunks of maxCharsPerRow
+            for (let rowStart = 0; rowStart < value.length; rowStart += maxCharsPerRow) {
+                const rowChars = value.slice(rowStart, rowStart + maxCharsPerRow);
+                
+                // Character row
+                table += '<tr>';
+                for (let char of rowChars) {
+                    let className = 'char-cell ';
+                    if (/\d/.test(char)) className += 'digit';
+                    else if (/[a-z]/.test(char)) className += 'lower';
+                    else if (/[A-Z]/.test(char)) className += 'upper';
+                    else className += 'special';
+                    table += `<td class="${className}">${char}</td>`;
+                }
+                table += '</tr>';
+                
+                // Number row
+                table += '<tr>';
+                for (let i = 0; i < rowChars.length; i++) {
+                    table += `<td class="char-number">${rowStart + i + 1}</td>`;
+                }
+                table += '</tr>';
+                
+                // Add spacing between rows if there are more rows
+                if (rowStart + maxCharsPerRow < value.length) {
+                    table += '<tr><td colspan="' + maxCharsPerRow + '" class="row-spacer"></td></tr>';
+                }
             }
-            table += '</tr><tr>';
-            for (let i = 1; i <= value.length; i++) {
-                table += `<td class="char-number">${i}</td>`;
-            }
-            table += '</tr></table>';
+            
+            table += '</table>';
             return table;
         }
 
