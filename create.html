@@ -1225,15 +1225,35 @@
             }
 
             /* Enhanced color coding for print */
+            .password-table {
+                display: table !important;
+                width: 100% !important;
+                border-collapse: separate !important;
+                border-spacing: 2px !important;
+                page-break-inside: avoid !important;
+                margin: 15px 0 !important;
+            }
+            .password-table tr {
+                display: table-row !important;
+            }
             .char-cell { 
+                display: table-cell !important;
                 font-size: 14pt !important;
-                padding: 12px 8px !important;
-                min-width: 35px !important;
+                padding: 10px 6px !important;
+                min-width: 30px !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                border: 1px solid #333 !important;
             }
             .char-number { 
+                display: table-cell !important;
                 font-size: 10pt !important;
-                padding: 8px 4px !important;
-                width: 35px !important;
+                padding: 6px 4px !important;
+                width: 30px !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                border: 1px solid #666 !important;
+                background: #f5f5f5 !important;
             }
             .char-cell.digit { 
                 color: #0066cc !important; 
@@ -1255,10 +1275,7 @@
                 background: #fff0f0 !important;
                 border-color: #cc0000 !important;
             }
-            .password-table {
-                page-break-inside: avoid !important;
-                margin: 15px 0 !important;
-            }
+
             .row-spacer {
                 height: 5px !important;
             }
@@ -1673,9 +1690,13 @@
             const maxCharsPerRow = 25; // Maximum characters per row for better printing
             let table = '<table class="password-table">';
             
+            console.log('formatEnhanced called with:', value, 'length:', value.length);
+            
             // Split password into chunks of maxCharsPerRow
             for (let rowStart = 0; rowStart < value.length; rowStart += maxCharsPerRow) {
                 const rowChars = value.slice(rowStart, rowStart + maxCharsPerRow);
+                
+                console.log(`Row ${Math.floor(rowStart/maxCharsPerRow) + 1}: start=${rowStart}, chars="${rowChars}", length=${rowChars.length}`);
                 
                 // Character row
                 table += '<tr>';
@@ -1692,7 +1713,8 @@
                 // Number row
                 table += '<tr>';
                 for (let i = 0; i < rowChars.length; i++) {
-                    table += `<td class="char-number">${rowStart + i + 1}</td>`;
+                    const position = rowStart + i + 1;
+                    table += `<td class="char-number">${position}</td>`;
                 }
                 table += '</tr>';
                 
@@ -1703,6 +1725,7 @@
             }
             
             table += '</table>';
+            console.log('Generated table HTML length:', table.length);
             return table;
         }
 
