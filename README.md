@@ -163,7 +163,7 @@ While MyLastKey is secure by design, ultimate security depends on:
 
 ## 🔗 **Links & Resources**
 
-- 🌐 **Live Application**: [MyLastKey.com](https://mylastkey.com)
+- 🌐 **Live Application**: [mylastkey.rasmusnielsen.eu](https://mylastkey.rasmusnielsen.eu)
 - 📂 **GitHub Repository**: [rasmusnielsen-eu/MyLastKey](https://github.com/rasmusnielsen-eu/MyLastKey)
 - 🛡️ **Security Details**: [Security & Privacy Page](security.html)
 - 👨‍💻 **Creator**: [rasmusnielsen.eu](https://rasmusnielsen.eu)
